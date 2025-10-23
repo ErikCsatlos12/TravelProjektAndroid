@@ -1,12 +1,15 @@
 package com.example.myapplication;
 
-public class NaturalWonder extends Attraction {
+
+public class NaturalWonder extends Attraction implements Dijkoteles {
 
     private String type;
+    private double price;
 
-    public NaturalWonder(String name, String city, double rating, String type) {
+    public NaturalWonder(String name, String city, double rating, String type, double price) {
         super(name, city, rating);
         this.type = type;
+        this.price = price;
     }
 
     @Override
@@ -16,5 +19,19 @@ public class NaturalWonder extends Attraction {
 
     public String getType() {
         return type;
+    }
+
+
+    @Override
+    public double getAr() {
+        return this.price;
+    }
+
+    @Override
+    public String getArInfo() {
+        if (price == 0) {
+            return "Ingyenes";
+        }
+        return price + " RON";
     }
 }
