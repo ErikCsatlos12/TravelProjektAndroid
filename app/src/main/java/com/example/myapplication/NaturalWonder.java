@@ -6,8 +6,8 @@ public class NaturalWonder extends Attraction implements Dijkoteles {
     private String type;
     private double price;
 
-    public NaturalWonder(String name, String city, double rating, String type, double price) {
-        super(name, city, rating);
+    public NaturalWonder(String name, String city, double rating, double latitude, double longitude, String type, double price) {
+        super(name, city, rating, latitude, longitude);
         this.type = type;
         this.price = price;
     }

@@ -6,8 +6,8 @@ public class HistoricalSite extends Attraction implements Dijkoteles {
     private double price;
 
 
-    public HistoricalSite(String name, String city, double rating, int constructionYear, double price) {
-        super(name, city, rating);
+    public HistoricalSite(String name, String city, double rating, double latitude, double longitude, int constructionYear, double price) {
+        super(name, city, rating, latitude, longitude);
         this.constructionYear = constructionYear;
         this.price = price;
     }

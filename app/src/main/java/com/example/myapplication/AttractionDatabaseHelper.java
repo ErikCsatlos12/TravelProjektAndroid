@@ -12,7 +12,7 @@ import java.util.List;
 public class AttractionDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "attractions.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public static final String TABLE_ATTRACTIONS = "attractions";
 
@@ -25,6 +25,9 @@ public class AttractionDatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_YEAR = "year";
     public static final String COLUMN_NATURE_TYPE = "nature_type";
 
+    public static final String COLUMN_LATITUDE = "latitude";
+    public static final String COLUMN_LONGITUDE = "longitude";
+
 
     private static final String CREATE_TABLE_QUERY =
             "CREATE TABLE " + TABLE_ATTRACTIONS + " (" +
@@ -35,6 +38,8 @@ public class AttractionDatabaseHelper extends SQLiteOpenHelper {
                     COLUMN_PRICE + " REAL, " +
                     COLUMN_YEAR + " INTEGER, " +
                     COLUMN_NATURE_TYPE + " TEXT, " +
+                    COLUMN_LATITUDE + " REAL, " +
+                    COLUMN_LONGITUDE + " REAL, " +
                     COLUMN_CATEGORY + " TEXT" +
                     ")";
 
@@ -60,6 +65,8 @@ public class AttractionDatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_NAME, attraction.getName());
         values.put(COLUMN_CITY, attraction.getCity());
         values.put(COLUMN_RATING, attraction.getRating());
+        values.put(COLUMN_LATITUDE, attraction.getLatitude());
+        values.put(COLUMN_LONGITUDE, attraction.getLongitude());
 
         if (attraction instanceof HistoricalSite) {
             HistoricalSite site = (HistoricalSite) attraction;
@@ -94,6 +101,8 @@ public class AttractionDatabaseHelper extends SQLiteOpenHelper {
                 int cityIndex = cursor.getColumnIndex(COLUMN_CITY);
                 int ratingIndex = cursor.getColumnIndex(COLUMN_RATING);
                 int priceIndex = cursor.getColumnIndex(COLUMN_PRICE);
+                int latIndex = cursor.getColumnIndex(COLUMN_LATITUDE);
+                int lngIndex = cursor.getColumnIndex(COLUMN_LONGITUDE);
 
                 if (categoryIndex == -1 || nameIndex == -1 || cityIndex == -1 || ratingIndex == -1 || priceIndex == -1) {
                     continue;
@@ -104,20 +113,22 @@ public class AttractionDatabaseHelper extends SQLiteOpenHelper {
                 String city = cursor.getString(cityIndex);
                 double rating = cursor.getDouble(ratingIndex);
                 double price = cursor.getDouble(priceIndex);
+                double latitude = cursor.getDouble(latIndex);
+                double longitude = cursor.getDouble(lngIndex);
 
                 if ("Historical".equals(category)) {
                     int yearIndex = cursor.getColumnIndex(COLUMN_YEAR);
                     if (yearIndex == -1) continue;
                     int year = cursor.getInt(yearIndex);
 
-                    attraction = new HistoricalSite(name, city, rating, year, price);
+                    attraction = new HistoricalSite(name, city, rating, latitude, longitude, year, price);
 
                 } else if ("Natural".equals(category)) {
                     int typeIndex = cursor.getColumnIndex(COLUMN_NATURE_TYPE);
                     if (typeIndex == -1) continue;
                     String type = cursor.getString(typeIndex);
 
-                    attraction = new NaturalWonder(name, city, rating, type, price);
+                    attraction = new NaturalWonder(name, city, rating, latitude, longitude, type, price);
                 }
 
                 if (attraction != null) {

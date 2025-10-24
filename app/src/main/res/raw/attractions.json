@@ -1,0 +1,68 @@
+[
+  {
+    "name": "Marosvásárhelyi vár",
+    "city": "Marosvásárhely",
+    "rating": 4.6,
+    "category": "Historical",
+    "price": 0.0,
+    "year": 1492,
+    "type": "",
+    "lat": 46.5475,
+    "lng": 24.5658
+  },
+  {
+    "name": "Medve-tó",
+    "city": "Szováta",
+    "rating": 4.6,
+    "category": "Natural",
+    "price": 30.0,
+    "year": 0,
+    "type": "sós vizű tó",
+    "lat": 46.5975,
+    "lng": 25.0753
+  },
+  {
+    "name": "Teleki Téka",
+    "city": "Marosvásárhely",
+    "rating": 4.7,
+    "category": "Historical",
+    "price": 15.0,
+    "year": 1802,
+    "type": "",
+    "lat": 46.5452,
+    "lng": 24.5595
+  },
+  {
+    "name": "Bozodi-tó",
+    "city": "Erdőszentgyörgy",
+    "rating": 4.7,
+    "category": "Natural",
+    "price": 0.0,
+    "year": 0,
+    "type": "víztározó",
+    "lat": 46.4780,
+    "lng": 24.8720
+  },
+  {
+    "name": "Segesvári vár",
+    "city": "Segesvár",
+    "rating": 4.8,
+    "category": "Historical",
+    "price": 25.0,
+    "year": 1350,
+    "type": "",
+    "lat": 46.2197,
+    "lng": 24.7928
+  },
+  {
+    "name": "Gyilkos-tó",
+    "city": "Gyergyószentmiklós",
+    "rating": 4.7,
+    "category": "Natural",
+    "price": 0.0,
+    "year": 0,
+    "type": "torlasztó",
+    "lat": 46.7861,
+    "lng": 25.7947
+  }
+]

@@ -7,4 +7,5 @@
     <string name="category_label_historical">Történelmi helyszín</string>
     <string name="category_label_natural">Természeti csoda</string>
     <string name="price_format">%s RON</string>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>
