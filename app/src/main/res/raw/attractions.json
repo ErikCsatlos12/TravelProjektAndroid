@@ -8,7 +8,9 @@
     "year": 1492,
     "type": "",
     "lat": 46.5475,
-    "lng": 24.5658
+    "lng": 24.5658,
+    "description": "Marosvásárhely középkori vára a város központjában található. Falai között múzeumok és kiállítások várják a látogatókat.",
+    "imageName": "vartemplom"
   },
   {
     "name": "Medve-tó",
@@ -19,7 +21,9 @@
     "year": 0,
     "type": "sós vizű tó",
     "lat": 46.5975,
-    "lng": 25.0753
+    "lng": 25.0753,
+    "description": "Európa legnagyobb heliotermikus tava, melynek vize gyógyhatású. Kedvelt fürdőhely.",
+    "imageName": "medve_to"
   },
   {
     "name": "Teleki Téka",
@@ -30,10 +34,12 @@
     "year": 1802,
     "type": "",
     "lat": 46.5452,
-    "lng": 24.5595
+    "lng": 24.5595,
+    "description": "Gróf Teleki Sámuel által alapított történelmi könyvtár, több mint 200 000 kötettel.",
+    "imageName": "teleki_teka"
   },
   {
-    "name": "Bozodi-tó",
+    "name": "Bözödi-tó",
     "city": "Erdőszentgyörgy",
     "rating": 4.7,
     "category": "Natural",
@@ -41,18 +47,22 @@
     "year": 0,
     "type": "víztározó",
     "lat": 46.4780,
-    "lng": 24.8720
+    "lng": 24.8720,
+    "description": "Festői környezetben elhelyezkedő víztározó, népszerű horgász- és kirándulóhely.",
+    "imageName": "bozod"
   },
   {
     "name": "Segesvári vár",
     "city": "Segesvár",
     "rating": 4.8,
     "category": "Historical",
-    "price": 25.0,
+    "price": 0.0,
     "year": 1350,
     "type": "",
     "lat": 46.2197,
-    "lng": 24.7928
+    "lng": 24.7928,
+    "description": "Erdély egyik legszebb és legjobb állapotban fennmaradt középkori vára, az UNESCO Világörökség része.",
+    "imageName": "segesvar"
   },
   {
     "name": "Gyilkos-tó",
@@ -63,6 +73,8 @@
     "year": 0,
     "type": "torlasztó",
     "lat": 46.7861,
-    "lng": 25.7947
+    "lng": 25.7947,
+    "description": "Természetes torlasztó, mely egy földcsuszamlás következtében keletkezett. Különlegessége a vízből kiálló facsonkok.",
+    "imageName": "gyilkos_to"
   }
 ]

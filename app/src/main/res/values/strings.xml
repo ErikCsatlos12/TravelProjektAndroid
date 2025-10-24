@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Erdélyvándor</string>
     <string name="price_free">Ingyenes</string>
     <string name="price_format_ron">%1$.2f RON</string>
     <string name="category_historical">Történelmi helyszín</string>

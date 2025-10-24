@@ -12,9 +12,18 @@ import java.util.List;
 public class AttractionAdapter extends RecyclerView.Adapter<AttractionAdapter.AttractionViewHolder> {
 
     private List<Attraction> attractionList;
+    private OnItemClickListener listener;
 
     public AttractionAdapter(List<Attraction> attractionList) {
         this.attractionList = attractionList;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(Attraction attraction);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -62,7 +71,7 @@ public class AttractionAdapter extends RecyclerView.Adapter<AttractionAdapter.At
         return attractionList.size();
     }
 
-    public static class AttractionViewHolder extends RecyclerView.ViewHolder {
+    public class AttractionViewHolder extends RecyclerView.ViewHolder {
         public TextView nameTextView;
         public TextView cityTextView;
         public TextView categoryTextView;
@@ -74,6 +83,13 @@ public class AttractionAdapter extends RecyclerView.Adapter<AttractionAdapter.At
             cityTextView = itemView.findViewById(R.id.item_city_textview);
             categoryTextView = itemView.findViewById(R.id.item_category_textview);
             priceTextView = itemView.findViewById(R.id.item_price_textview);
+
+            itemView.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onItemClick(attractionList.get(position));
+                }
+            });
         }
     }
 }
