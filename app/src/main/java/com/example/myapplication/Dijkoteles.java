@@ -5,5 +5,5 @@ public interface Dijkoteles {
 
     double getAr();
 
-    String getArInfo();
+
 }

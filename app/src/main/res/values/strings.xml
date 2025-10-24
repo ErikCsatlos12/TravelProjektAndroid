@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="price_free">Ingyenes</string>
+    <string name="price_format_ron">%1$.2f RON</string>
+    <string name="category_historical">Történelmi helyszín</string>
+    <string name="category_natural_format">Természeti csoda (%s)</string>
     <string name="category_label_historical">Történelmi helyszín</string>
     <string name="category_label_natural">Természeti csoda</string>
-    <string name="price_free">Ingyenes</string>
     <string name="price_format">%s RON</string>
 </resources>

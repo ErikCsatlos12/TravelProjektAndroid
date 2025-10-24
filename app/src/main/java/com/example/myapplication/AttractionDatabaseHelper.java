@@ -25,6 +25,7 @@ public class AttractionDatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_YEAR = "year";
     public static final String COLUMN_NATURE_TYPE = "nature_type";
 
+
     private static final String CREATE_TABLE_QUERY =
             "CREATE TABLE " + TABLE_ATTRACTIONS + " (" +
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +

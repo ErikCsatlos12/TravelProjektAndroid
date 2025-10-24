@@ -27,11 +27,4 @@ public class HistoricalSite extends Attraction implements Dijkoteles {
         return this.price;
     }
 
-    @Override
-    public String getArInfo() {
-        if (price == 0) {
-            return "Ingyenes";
-        }
-        return price + " RON";
-    }
 }
