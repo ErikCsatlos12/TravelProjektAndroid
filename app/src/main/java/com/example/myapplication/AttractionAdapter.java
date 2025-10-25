@@ -70,7 +70,10 @@ public class AttractionAdapter extends RecyclerView.Adapter<AttractionAdapter.At
     public int getItemCount() {
         return attractionList.size();
     }
-
+    public void setFilterData(List<Attraction> newData) {
+        this.attractionList = newData;
+        notifyDataSetChanged();
+    }
     public class AttractionViewHolder extends RecyclerView.ViewHolder {
         public TextView nameTextView;
         public TextView cityTextView;

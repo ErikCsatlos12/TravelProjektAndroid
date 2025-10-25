@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.app.AlertDialog;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,6 +28,8 @@ public class MainActivity extends AppCompatActivity implements AttractionAdapter
     private List<Attraction> attractionsDataList;
     private AttractionDatabaseHelper dbHelper;
 
+    private String currentFilter = "Mind mutatása";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,12 +47,7 @@ public class MainActivity extends AppCompatActivity implements AttractionAdapter
                 task.execute();
             } else {
                 Log.d("MainActivity", "Adatbázis betöltve, " + attractionsDataList.size() + " elem.");
-                adapter = new AttractionAdapter(attractionsDataList);
-
-                adapter.setOnItemClickListener(this);
-
-                recyclerView.setLayoutManager(new LinearLayoutManager(this));
-                recyclerView.setAdapter(adapter);
+                loadRecyclerViewData(attractionsDataList);
             }
 
         } catch (Exception e) {
@@ -61,7 +60,73 @@ public class MainActivity extends AppCompatActivity implements AttractionAdapter
             Intent intent = new Intent(MainActivity.this, MapsActivity.class);
             startActivity(intent);
         });
+
+        FloatingActionButton fabFilter = findViewById(R.id.fab_filter);
+        fabFilter.setOnClickListener(v -> {
+            showFilterDialog();
+        });
     }
+
+
+    private void loadRecyclerViewData(List<Attraction> data) {
+        adapter = new AttractionAdapter(data);
+        adapter.setOnItemClickListener(this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+    }
+
+
+    private void showFilterDialog() {
+        final String[] filterOptions = {"Mind mutatása", "Történelmi helyszín", "Természeti csoda", "Ingyenes", "Fizetős"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Szűrés beállítása")
+                .setItems(filterOptions, (dialog, which) -> {
+                    String selectedFilter = filterOptions[which];
+                    currentFilter = selectedFilter;
+                    Toast.makeText(MainActivity.this, "Szűrő beállítva: " + selectedFilter, Toast.LENGTH_SHORT).show();
+
+                    filterAndReloadData(selectedFilter);
+                });
+
+        builder.setNegativeButton("Mégse", (dialog, which) -> dialog.dismiss());
+        builder.create().show();
+    }
+
+    private void filterAndReloadData(String filter) {
+        List<Attraction> fullList = dbHelper.getAllAttractions();
+        List<Attraction> filteredList = new ArrayList<>();
+
+        for (Attraction attraction : fullList) {
+            boolean isMatch = false;
+
+            if (filter.equals("Mind mutatása")) {
+                isMatch = true;
+            } else if (filter.equals("Történelmi helyszín") && attraction instanceof HistoricalSite) {
+                isMatch = true;
+            } else if (filter.equals("Természeti csoda") && attraction instanceof NaturalWonder) {
+                isMatch = true;
+            }
+            else if (filter.equals("Ingyenes") && attraction instanceof Dijkoteles) {
+                if (((Dijkoteles) attraction).getAr() == 0.0) {
+                    isMatch = true;
+                }
+            } else if (filter.equals("Fizetős") && attraction instanceof Dijkoteles) {
+                if (((Dijkoteles) attraction).getAr() > 0.0) {
+                    isMatch = true;
+                }
+            }
+
+            if (isMatch) {
+                filteredList.add(attraction);
+            }
+        }
+
+        adapter.setFilterData(filteredList);
+
+        Toast.makeText(this, "Találatok: " + filteredList.size(), Toast.LENGTH_SHORT).show();
+    }
+
 
     @Override
     public void onItemClick(Attraction attraction) {
@@ -170,12 +235,7 @@ public class MainActivity extends AppCompatActivity implements AttractionAdapter
 
                 attractionsDataList = dbHelper.getAllAttractions();
 
-                adapter = new AttractionAdapter(attractionsDataList);
-
-                adapter.setOnItemClickListener(MainActivity.this);
-
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                recyclerView.setAdapter(adapter);
+                loadRecyclerViewData(attractionsDataList);
 
                 Log.d("MainActivity", "Fájlból olvasás kész, adatbázis feltöltve " + attractionsDataList.size() + " elemmel.");
             } else {

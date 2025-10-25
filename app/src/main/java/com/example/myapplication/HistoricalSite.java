@@ -31,7 +31,7 @@ public class HistoricalSite extends Attraction implements Dijkoteles {
     }
 
     @Override
-    public String getArInfo() { // <-- A PUBLIC kulcsszó hiányzik (ha nincs explicit módon megadva az interfésznél)
+    public String getArInfo() {
         if (price == 0) {
             return "Ingyenes";
         }

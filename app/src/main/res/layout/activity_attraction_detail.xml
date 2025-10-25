@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/detail_background"
-    android:paddingTop="72dp"                                android:paddingBottom="48dp"
-    android:clipToPadding="false"
     tools:context=".AttractionDetailActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+    <ScrollView
+        android:id="@+id/detail_scrollview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:paddingTop="72dp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <ImageView
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="48dp"> <ImageView
             android:id="@+id/detail_image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
@@ -24,58 +33,71 @@
             tools:src="@drawable/marosvasarhelyi_var"
             android:contentDescription="Látványosság képe" />
 
-        <TextView
-            android:id="@+id/detail_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
-            tools:text="Marosvásárhelyi Vár" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal">
-
             <TextView
-                android:id="@+id/detail_rating"
+                android:id="@+id/detail_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableStart="@android:drawable/btn_star_big_on"
-                android:drawableTint="@android:color/holo_orange_dark"
+                android:layout_marginTop="8dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                android:textStyle="bold"
                 android:textColor="@android:color/black"
-                tools:text="4.6"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                tools:text="Marosvásárhelyi Vár" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/detail_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@android:drawable/btn_star_big_on"
+                    android:drawableTint="@android:color/holo_orange_dark"
+                    android:textColor="@android:color/black"
+                    tools:text="4.6"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                <TextView
+                    android:id="@+id/detail_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:textColor="@android:color/black"
+                    tools:text="Történelmi helyszín"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/detail_category"
-                android:layout_width="wrap_content"
+                android:id="@+id/detail_description"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:lineSpacingExtra="4dp"
                 android:textColor="@android:color/black"
-                tools:text="Történelmi helyszín"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                tools:text="Itt jön a hosszú leírás a várról, a történetéről és a látnivalókról." />
+
+            <Button
+                android:id="@+id/detail_map_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Navigáció indítása" />
+
         </LinearLayout>
+    </ScrollView>
 
-        <TextView
-            android:id="@+id/detail_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:lineSpacingExtra="4dp"
-            android:textColor="@android:color/black"
-            tools:text="Itt jön a hosszú leírás a várról, a történetéről és a látnivalókról." />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:srcCompat="@android:drawable/ic_menu_revert" app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="Vissza a főoldalra" />
 
-        <Button
-            android:id="@+id/detail_map_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Navigáció indítása" />
-
-    </LinearLayout>
-
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

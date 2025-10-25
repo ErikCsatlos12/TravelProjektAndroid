@@ -28,7 +28,6 @@ public class NaturalWonder extends Attraction implements Dijkoteles {
         return this.price;
     }
 
-    // A JAVÍTÁS: Hozzáadva a public kulcsszó, hogy megfeleljen az interfésznek
     @Override
     public String getArInfo() {
         if (price == 0) {

@@ -19,7 +19,8 @@
         android:paddingEnd="16dp"
         android:paddingBottom="16dp"
         android:paddingTop="16dp"
-        android:layout_marginTop="40dp"                  android:gravity="center"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
         android:background="#80000000"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,6 +48,19 @@
         android:focusable="true"
         app:srcCompat="@android:drawable/ic_dialog_map"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="Térkép" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:srcCompat="@android:drawable/ic_menu_sort_by_size"  app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="Szűrő" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

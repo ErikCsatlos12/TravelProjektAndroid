@@ -1,14 +1,13 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import android.net.Uri;
 
 public class AttractionDetailActivity extends AppCompatActivity {
 
@@ -28,16 +27,19 @@ public class AttractionDetailActivity extends AppCompatActivity {
         TextView detailDescription = findViewById(R.id.detail_description);
         Button mapButton = findViewById(R.id.detail_map_button);
 
+        FloatingActionButton fabHome = findViewById(R.id.fab_home);
+
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
+
             attractionName = extras.getString("NAME");
             String description = extras.getString("DESCRIPTION");
             String imageName = extras.getString("IMAGE_NAME");
             String category = extras.getString("CATEGORY");
 
             double rating = extras.getDouble("RATING");
-            targetLatitude = extras.getDouble("LATITUDE"); // Globális változóba mentjük
-            targetLongitude = extras.getDouble("LONGITUDE"); // Globális változóba mentjük
+            targetLatitude = extras.getDouble("LATITUDE");
+            targetLongitude = extras.getDouble("LONGITUDE");
 
             detailName.setText(attractionName);
             detailDescription.setText(description);
@@ -59,5 +61,9 @@ public class AttractionDetailActivity extends AppCompatActivity {
                 startActivity(mapIntent);
             });
         }
+
+        fabHome.setOnClickListener(v -> {
+            finish();
+        });
     }
 }
