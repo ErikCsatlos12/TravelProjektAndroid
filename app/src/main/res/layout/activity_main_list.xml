@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/erdo_hatter"
-    tools:context=".MainActivity">
+    tools:context=".AttractionListActivity">
 
     <TextView
         android:id="@+id/main_title_textview"
@@ -52,6 +52,19 @@
         android:contentDescription="Térkép" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_back_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:srcCompat="@android:drawable/ic_menu_revert"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="Vissza a főmenübe" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -59,8 +72,9 @@
         android:layout_marginBottom="16dp"
         android:clickable="true"
         android:focusable="true"
-        app:srcCompat="@android:drawable/ic_menu_sort_by_size"  app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_sort_by_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/fab_back_home"
         android:contentDescription="Szűrő" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

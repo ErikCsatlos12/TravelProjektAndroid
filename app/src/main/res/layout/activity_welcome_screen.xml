@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/erdo_hatter"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/welcome_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/welcome_message"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:padding="24dp"
+        android:layout_marginTop="64dp"
+        android:background="#80000000"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/category_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_margin="32dp"
+        app:layout_constraintTop_toBottomOf="@id/welcome_title"
+        app:layout_constraintBottom_toTopOf="@id/btn_show_all"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/btn_historical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Történelmi helyszín"
+            android:drawableStart="@drawable/ic_historical"
+            android:drawableTint="@android:color/white"    android:textColor="@android:color/white"      android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/teal_700" />   <Button
+        android:id="@+id/btn_natural"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Természeti csoda"
+        android:drawableStart="@drawable/ic_natural"
+        android:drawableTint="@android:color/white"    android:textColor="@android:color/white"      android:padding="16dp"
+        android:backgroundTint="@color/teal_700" />   </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_show_all"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Összes látványosság mutatása"
+        android:textColor="@android:color/white"          android:padding="16dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:backgroundTint="@color/teal_700" />
+</androidx.constraintlayout.widget.ConstraintLayout>
