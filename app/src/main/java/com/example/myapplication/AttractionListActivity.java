@@ -37,6 +37,7 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
 
         recyclerView = findViewById(R.id.attractions_recycler_view);
 
+        // 1. Megkapjuk az indító Activity-től átadott szűrőt (EZ A KEZDETI KATEGÓRIA)
         String initialFilter = getIntent().getStringExtra("INITIAL_FILTER");
         if (initialFilter != null) {
             currentFilter = initialFilter;
@@ -52,6 +53,7 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                 task.execute();
             } else {
                 Log.d("AttractionListActivity", "Adatbázis betöltve, " + attractionsDataList.size() + " elem.");
+                // Kezdeti szűrés és betöltés a kategória szerint
                 filterAndReloadData("Mind mutatása");
             }
 
@@ -60,17 +62,20 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
             e.printStackTrace();
         }
 
+        // Térkép gomb (Jobb lent)
         FloatingActionButton fabMap = findViewById(R.id.fab_map);
         fabMap.setOnClickListener(view -> {
             Intent intent = new Intent(AttractionListActivity.this, MapsActivity.class);
             startActivity(intent);
         });
 
+        // SZŰRŐ GOMB (Bal lent)
         FloatingActionButton fabFilter = findViewById(R.id.fab_filter);
         fabFilter.setOnClickListener(v -> {
             showFilterDialog();
         });
 
+        // VISSZA A FŐMENÜBE GOMB BEÁLLÍTÁSA
         FloatingActionButton fabBackHome = findViewById(R.id.fab_back_home);
         fabBackHome.setOnClickListener(v -> {
             finish();
@@ -112,10 +117,14 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
         builder.create().show();
     }
 
+    /**
+     * Kiszűri a látványosságokat a teljes listából, és frissíti a RecyclerView-t.
+     */
     private void filterAndReloadData(String priceFilter) {
         List<Attraction> fullList = dbHelper.getAllAttractions();
         List<Attraction> categoryFilteredList = new ArrayList<>();
 
+        // 1. Első lépés: KATEGÓRIA SZŰRÉS (Mindig az initialFilter szerint)
         for (Attraction attraction : fullList) {
             if (currentFilter.equals("Mind mutatása")) {
                 categoryFilteredList.add(attraction);
@@ -123,9 +132,12 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                 categoryFilteredList.add(attraction);
             } else if (currentFilter.equals("Természeti csoda") && attraction instanceof NaturalWonder) {
                 categoryFilteredList.add(attraction);
+            } else if (currentFilter.equals("Adventure") && attraction instanceof AdventureSite) { // <-- KALAND KATEGÓRIA TÁMOGATÁS
+                categoryFilteredList.add(attraction);
             }
         }
 
+        // 2. Második lépés: ÁR SZERINTI SZŰRÉS a már szűrt listán
         List<Attraction> finalFilteredList = new ArrayList<>();
 
         for (Attraction attraction : categoryFilteredList) {
@@ -142,7 +154,7 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                     isPriceMatch = true;
                 }
             } else if (priceFilter.equals("Ingyenes")) {
-                isPriceMatch = true;
+                isPriceMatch = true; // Ingyenes, ha nem díjköteles
             }
 
             if (isPriceMatch) {
@@ -150,6 +162,7 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
             }
         }
 
+        // Frissítjük az Adaptert az új, szűrt listával
         loadRecyclerViewData(finalFilteredList);
 
         Toast.makeText(this, "Találatok: " + finalFilteredList.size(), Toast.LENGTH_SHORT).show();
@@ -221,6 +234,18 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                     String description = attrJson.getString("description");
                     String imageName = attrJson.getString("imageName");
 
+                    // Ellenőrizzük, hogy az Adventure kategóriához tartozó egyedi mezők léteznek-e
+                    String activityType = "";
+                    if (category.equals("Adventure")) {
+                        // A kaland kategóriánál az activityType az AdventureSite konstruktorához szükséges
+                        if (attrJson.has("activityType")) {
+                            activityType = attrJson.getString("activityType");
+                        } else {
+                            Log.e("FetchDataTask", "Hiányzó activityType mező az Adventure kategóriánál!");
+                            continue; // Kihagyjuk ezt az elemet, ha hibás
+                        }
+                    }
+
                     if ("Historical".equals(category)) {
                         int year = attrJson.getInt("year");
                         HistoricalSite site = new HistoricalSite(name, city, rating, lat, lng, description, imageName, year, price);
@@ -230,6 +255,9 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                         String type = attrJson.getString("type");
                         NaturalWonder wonder = new NaturalWonder(name, city, rating, lat, lng, description, imageName, type, price);
                         loadedAttractions.add(wonder);
+                    } else if ("Adventure".equals(category)) {
+                        AdventureSite adventure = new AdventureSite(name, city, rating, lat, lng, description, imageName, activityType, price);
+                        loadedAttractions.add(adventure);
                     }
                 }
                 return loadedAttractions;
@@ -238,7 +266,7 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                 Log.e("FetchDataTask", "Hiba a fájl olvasásánál", e);
                 return null;
             } catch (JSONException e) {
-                Log.e("FetchDataTask", "Hiba a JSON feldogozásánál", e);
+                Log.e("FetchDataTask", "Hiba a JSON feldogozásánál: " + e.getMessage(), e);
                 return null;
             } finally {
                 if (reader != null) {

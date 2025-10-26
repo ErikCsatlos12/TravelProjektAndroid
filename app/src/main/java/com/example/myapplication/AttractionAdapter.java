@@ -48,10 +48,19 @@ public class AttractionAdapter extends RecyclerView.Adapter<AttractionAdapter.At
             holder.categoryTextView.setText(categoryText);
 
         } else if (currentAttraction instanceof NaturalWonder) {
+            // A NaturalWonder getCategory metódusa már tartalmazza a type-ot, de az adapterben a string.xml-t használjuk
             String natureType = ((NaturalWonder) currentAttraction).getType();
             String categoryText = context.getString(R.string.category_natural_format, natureType);
             holder.categoryTextView.setText(categoryText);
+
+        } else if (currentAttraction instanceof AdventureSite) { // <-- HIÁNYZÓ KALAND LOGIKA
+            String activityType = ((AdventureSite) currentAttraction).getActivityType();
+            // Mivel nincs adventure_format stringünk, használjuk a getCategory() metódust,
+            // ami már formázza a nevet az osztályban!
+            holder.categoryTextView.setText(currentAttraction.getCategory());
+
         }
+
 
         if (currentAttraction instanceof Dijkoteles) {
             double price = ((Dijkoteles) currentAttraction).getAr();
@@ -70,10 +79,12 @@ public class AttractionAdapter extends RecyclerView.Adapter<AttractionAdapter.At
     public int getItemCount() {
         return attractionList.size();
     }
+
     public void setFilterData(List<Attraction> newData) {
         this.attractionList = newData;
         notifyDataSetChanged();
     }
+
     public class AttractionViewHolder extends RecyclerView.ViewHolder {
         public TextView nameTextView;
         public TextView cityTextView;

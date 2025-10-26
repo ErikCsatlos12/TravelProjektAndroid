@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/erdo_hatter"
     tools:context=".MainActivity">
 
+    <!-- FŐ CÍM -->
     <TextView
         android:id="@+id/welcome_title"
         android:layout_width="0dp"
@@ -17,7 +18,7 @@
         android:textColor="@android:color/white"
         android:gravity="center"
         android:padding="24dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="40dp"
         android:background="#80000000"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,29 +36,54 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
+        <!-- 1. TÖRTÉNELMI GOMB -->
         <Button
             android:id="@+id/btn_historical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Történelmi helyszín"
             android:drawableStart="@drawable/ic_historical"
-            android:drawableTint="@android:color/white"    android:textColor="@android:color/white"      android:padding="16dp"
+            android:drawableTint="@android:color/white"
+            android:textColor="@android:color/white"
+            android:padding="16dp"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/teal_700" />   <Button
-        android:id="@+id/btn_natural"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Természeti csoda"
-        android:drawableStart="@drawable/ic_natural"
-        android:drawableTint="@android:color/white"    android:textColor="@android:color/white"      android:padding="16dp"
-        android:backgroundTint="@color/teal_700" />   </LinearLayout>
+            android:backgroundTint="@color/teal_700" />
 
+        <!-- 2. TERMÉSZETI GOMB -->
+        <Button
+            android:id="@+id/btn_natural"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Természeti csoda"
+            android:drawableStart="@drawable/ic_natural"
+            android:drawableTint="@android:color/white"
+            android:textColor="@android:color/white"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/teal_700" />
+
+        <!-- 3. KALAND GOMB (ÚJ) -->
+        <Button
+            android:id="@+id/btn_adventure"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Kaland"
+            android:drawableStart="@drawable/ic_adventure"
+            android:drawableTint="@android:color/white"
+            android:textColor="@android:color/white"
+            android:padding="16dp"
+            android:backgroundTint="@color/teal_700" />
+
+    </LinearLayout>
+
+    <!-- Összes mutatása gomb -->
     <Button
         android:id="@+id/btn_show_all"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Összes látványosság mutatása"
-        android:textColor="@android:color/white"          android:padding="16dp"
+        android:textColor="@android:color/white"
+        android:padding="16dp"
         android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

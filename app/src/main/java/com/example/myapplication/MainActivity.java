@@ -14,10 +14,12 @@ public class MainActivity extends AppCompatActivity {
 
         Button btnHistorical = findViewById(R.id.btn_historical);
         Button btnNatural = findViewById(R.id.btn_natural);
+        Button btnAdventure = findViewById(R.id.btn_adventure);
         Button btnShowAll = findViewById(R.id.btn_show_all);
 
         btnHistorical.setOnClickListener(v -> startListActivity("Történelmi helyszín"));
         btnNatural.setOnClickListener(v -> startListActivity("Természeti csoda"));
+        btnAdventure.setOnClickListener(v -> startListActivity("Adventure"));
         btnShowAll.setOnClickListener(v -> startListActivity("Mind mutatása"));
     }
 
