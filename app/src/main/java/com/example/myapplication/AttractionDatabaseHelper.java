@@ -11,7 +11,7 @@ import java.util.List;
 public class AttractionDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "attractions.db";
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
 
     public static final String TABLE_ATTRACTIONS = "attractions";
 

@@ -116,7 +116,7 @@
     "activityType": ""
   },
   {
-    "name": "Bethlen-kastély (Keresd)",
+    "name": "Bethlen-kastély",
     "city": "Keresd",
     "rating": 4.4,
     "category": "Historical",
@@ -186,7 +186,7 @@
     "activityType": ""
   },
   {
-    "name": "Hunyadiudvar (Mátyás szülőháza)",
+    "name": "Mátyás szülőháza",
     "city": "Kolozsvár",
     "rating": 4.6,
     "category": "Historical",
@@ -452,7 +452,7 @@
     "activityType": "síelés"
   },
   {
-    "name": "Görgényi-havasok (Túra)",
+    "name": "Görgényi-havasok",
     "city": "Marosfő",
     "rating": 4.7,
     "category": "Adventure",
@@ -494,7 +494,7 @@
     "activityType": "falmászás"
   },
   {
-    "name": "Sziklás-szoros (Cheile Turzii)",
+    "name": "Sziklás-szoros",
     "city": "Torda",
     "rating": 4.9,
     "category": "Adventure",
@@ -536,7 +536,7 @@
     "activityType": "Via Ferrata"
   },
   {
-    "name": "Medveles (Tusnádfürdő)",
+    "name": "Medveles",
     "city": "Tusnádfürdő",
     "rating": 4.6,
     "category": "Adventure",

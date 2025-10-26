@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,23 +44,7 @@ public class AttractionAdapter extends RecyclerView.Adapter<AttractionAdapter.At
         holder.nameTextView.setText(currentAttraction.getName());
         holder.cityTextView.setText(currentAttraction.getCity());
 
-        if (currentAttraction instanceof HistoricalSite) {
-            String categoryText = context.getString(R.string.category_historical);
-            holder.categoryTextView.setText(categoryText);
-
-        } else if (currentAttraction instanceof NaturalWonder) {
-            // A NaturalWonder getCategory metódusa már tartalmazza a type-ot, de az adapterben a string.xml-t használjuk
-            String natureType = ((NaturalWonder) currentAttraction).getType();
-            String categoryText = context.getString(R.string.category_natural_format, natureType);
-            holder.categoryTextView.setText(categoryText);
-
-        } else if (currentAttraction instanceof AdventureSite) { // <-- HIÁNYZÓ KALAND LOGIKA
-            String activityType = ((AdventureSite) currentAttraction).getActivityType();
-            // Mivel nincs adventure_format stringünk, használjuk a getCategory() metódust,
-            // ami már formázza a nevet az osztályban!
-            holder.categoryTextView.setText(currentAttraction.getCategory());
-
-        }
+        holder.categoryTextView.setText(currentAttraction.getCategory());
 
 
         if (currentAttraction instanceof Dijkoteles) {
@@ -72,6 +57,18 @@ public class AttractionAdapter extends RecyclerView.Adapter<AttractionAdapter.At
             }
         } else {
             holder.priceTextView.setText(context.getString(R.string.price_free));
+        }
+
+        String imageName = currentAttraction.getImageName();
+
+        int imageResId = context.getResources().getIdentifier(
+                imageName, "drawable", context.getPackageName()
+        );
+
+        if (imageResId != 0) {
+            holder.imagePreview.setImageResource(imageResId);
+        } else {
+            holder.imagePreview.setImageResource(R.drawable.ic_launcher_foreground);
         }
     }
 
@@ -90,6 +87,7 @@ public class AttractionAdapter extends RecyclerView.Adapter<AttractionAdapter.At
         public TextView cityTextView;
         public TextView categoryTextView;
         public TextView priceTextView;
+        public ImageView imagePreview;
 
         public AttractionViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -97,6 +95,7 @@ public class AttractionAdapter extends RecyclerView.Adapter<AttractionAdapter.At
             cityTextView = itemView.findViewById(R.id.item_city_textview);
             categoryTextView = itemView.findViewById(R.id.item_category_textview);
             priceTextView = itemView.findViewById(R.id.item_price_textview);
+            imagePreview = itemView.findViewById(R.id.item_image_preview); // Kép előnézet regisztrálása
 
             itemView.setOnClickListener(v -> {
                 int position = getAdapterPosition();
