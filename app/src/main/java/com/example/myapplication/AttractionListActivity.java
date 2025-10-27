@@ -6,26 +6,27 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -35,8 +36,8 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
 
     private RecyclerView recyclerView;
     private AttractionAdapter adapter;
-    private List<Attraction> attractionsDataList;
-    private AttractionDatabaseHelper dbHelper;
+    private List<Attraction> fullAttractionList;
+    private FirebaseFirestore db;
 
     private String currentFilter = "Mind mutatása";
 
@@ -51,64 +52,89 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
         setContentView(R.layout.activity_main_list);
 
         recyclerView = findViewById(R.id.attractions_recycler_view);
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        db = FirebaseFirestore.getInstance();
+        fullAttractionList = new ArrayList<>();
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this); // GPS inicializálása
 
         String initialFilter = getIntent().getStringExtra("INITIAL_FILTER");
         if (initialFilter != null) {
             currentFilter = initialFilter;
         }
 
-        try {
-            dbHelper = new AttractionDatabaseHelper(this);
-            attractionsDataList = dbHelper.getAllAttractions();
-
-            if (attractionsDataList.isEmpty()) {
-                Log.d("AttractionListActivity", "Adatbázis üres, helyi fájl olvasása indítása...");
-                FetchDataTask task = new FetchDataTask(dbHelper, this);
-                task.execute();
-            } else {
-                Log.d("AttractionListActivity", "Adatbázis betöltve, " + attractionsDataList.size() + " elem.");
-                checkLocationPermissionAndGetLocation();
-            }
-
-        } catch (Exception e) {
-            Log.e("AttractionListActivity", "Hiba történt az adatbázis kezelésekor!", e);
-            e.printStackTrace();
-        }
+        loadDataFromFirebase();
 
         FloatingActionButton fabMap = findViewById(R.id.fab_map);
-        fabMap.setOnClickListener(new android.view.View.OnClickListener() {
+        fabMap.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(android.view.View view) {
+            public void onClick(View v) {
                 Intent intent = new Intent(AttractionListActivity.this, MapsActivity.class);
                 startActivity(intent);
             }
         });
 
         FloatingActionButton fabFilter = findViewById(R.id.fab_filter);
-        fabFilter.setOnClickListener(new android.view.View.OnClickListener() {
+        fabFilter.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(android.view.View v) {
+            public void onClick(View v) {
                 showFilterDialog();
             }
         });
 
         FloatingActionButton fabBackHome = findViewById(R.id.fab_back_home);
-        fabBackHome.setOnClickListener(new android.view.View.OnClickListener() {
+        fabBackHome.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(android.view.View v) {
+            public void onClick(View v) {
                 finish();
             }
         });
     }
 
-    // GPS / HELYMEGHATÁROZÁS LOGIKA
+    private void loadDataFromFirebase() {
+        Toast.makeText(this, "Látványosságok letöltése a felhőből...", Toast.LENGTH_SHORT).show();
+
+        db.collection("attractions")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String category = document.getString("category");
+                                Attraction attraction = null;
+
+                                try {
+                                    if ("Historical".equals(category) || "Cultural".equals(category)) {
+                                        attraction = document.toObject(HistoricalSite.class);
+                                    } else if ("Natural".equals(category)) {
+                                        attraction = document.toObject(NaturalWonder.class);
+                                    } else if ("Adventure".equals(category)) {
+                                        attraction = document.toObject(AdventureSite.class);
+                                    }
+
+                                    if (attraction != null) {
+                                        fullAttractionList.add(attraction);
+                                    }
+                                } catch (Exception e) {
+                                    Log.e("FirebaseData", "Hiba az objektum átalakításánál: " + document.getId(), e);
+                                }
+                            }
+                            Log.d("FirebaseData", "Sikeres letöltés: " + fullAttractionList.size() + " elem.");
+
+                            checkLocationPermissionAndGetLocation();
+
+                        } else {
+                            Log.e("FirebaseData", "Hiba a Firebase adatok letöltésekor: ", task.getException());
+                        }
+                    }
+                });
+    }
+
 
     private void checkLocationPermissionAndGetLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             getLastLocation();
         } else {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         }
     }
 
@@ -138,18 +164,15 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                         if (location != null) {
                             userLastLocation = location;
                             Log.d("Location", "Felhasználó helyzete: " + location.getLatitude() + ", " + location.getLongitude());
-                            filterAndReloadData("Mind mutatása");
                         } else {
-                            Log.w("Location", "Nem sikerült utolsó helyzetet lekérni.");
-                            filterAndReloadData("Mind mutatása");
+                            Log.w("Location", "Nem sikerült utolsó helyzetet lekérni (GPS ki van kapcsolva?).");
                         }
+                        filterAndReloadData("Mind mutatása");
                     }
                 });
     }
 
-
-     //Haversine-képlet)
-
+    // Haversine képlet
     private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
         final int R = 6371;
         double latDistance = Math.toRadians(lat2 - lat1);
@@ -161,17 +184,18 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
         return R * c;
     }
 
-
     private void loadRecyclerViewData(List<Attraction> data) {
+        // TÁVOLSÁG SZERINTI RENDEZÉS
         if (userLastLocation != null) {
             Collections.sort(data, new Comparator<Attraction>() {
                 @Override
                 public int compare(Attraction a1, Attraction a2) {
                     double dist1 = calculateDistance(userLastLocation.getLatitude(), userLastLocation.getLongitude(), a1.getLatitude(), a1.getLongitude());
                     double dist2 = calculateDistance(userLastLocation.getLatitude(), userLastLocation.getLongitude(), a2.getLatitude(), a2.getLongitude());
-                    return Double.compare(dist1, dist2);
+                    return Double.compare(dist1, dist2); // Növekvő sorrend (legközelebbi elöl)
                 }
             });
+            Toast.makeText(this, "Lista rendezve távolság szerint.", Toast.LENGTH_SHORT).show();
         }
 
         adapter = new AttractionAdapter(data);
@@ -192,7 +216,6 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
             public void onClick(android.content.DialogInterface dialog, int which) {
                 String selectedFilter = filterOptions[which];
                 Toast.makeText(AttractionListActivity.this, "Ár szűrő beállítva: " + selectedFilter, Toast.LENGTH_SHORT).show();
-
                 filterAndReloadData(selectedFilter);
             }
         });
@@ -208,10 +231,9 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
     }
 
     private void filterAndReloadData(String priceFilter) {
-        List<Attraction> fullList = dbHelper.getAllAttractions();
         List<Attraction> categoryFilteredList = new ArrayList<>();
 
-        for (Attraction attraction : fullList) {
+        for (Attraction attraction : fullAttractionList) {
             if (currentFilter.equals("Mind mutatása")) {
                 categoryFilteredList.add(attraction);
             } else if (currentFilter.equals("Történelmi helyszín") && attraction instanceof HistoricalSite) {
@@ -222,7 +244,8 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                 categoryFilteredList.add(attraction);
             }
         }
-        
+
+        // 2. ÁR SZERINTI SZŰRÉS
         List<Attraction> finalFilteredList = new ArrayList<>();
 
         for (Attraction attraction : categoryFilteredList) {
@@ -232,7 +255,6 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                 isPriceMatch = true;
             } else if (attraction instanceof Dijkoteles) {
                 double ar = ((Dijkoteles) attraction).getAr();
-
                 if (priceFilter.equals("Ingyenes") && ar == 0.0) {
                     isPriceMatch = true;
                 } else if (priceFilter.equals("Fizetős") && ar > 0.0) {
@@ -248,7 +270,6 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
         }
 
         loadRecyclerViewData(finalFilteredList);
-
         Toast.makeText(this, "Találatok: " + finalFilteredList.size(), Toast.LENGTH_SHORT).show();
     }
 
@@ -269,107 +290,4 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
         startActivity(intent);
     }
 
-    private class FetchDataTask extends AsyncTask<Void, Void, List<Attraction>> {
-
-        private AttractionDatabaseHelper dbHelper;
-        private Context context;
-
-        public FetchDataTask(AttractionDatabaseHelper helper, Context context) {
-            this.dbHelper = helper;
-            this.context = context.getApplicationContext();
-        }
-
-        @Override
-        protected List<Attraction> doInBackground(Void... params) {
-            BufferedReader reader = null;
-            String jsonString = null;
-            List<Attraction> loadedAttractions = new ArrayList<>();
-
-            try {
-                InputStream inputStream = context.getResources().openRawResource(R.raw.attractions);
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
-                    return null;
-                }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line + "\n");
-                }
-
-                if (buffer.length() == 0) {
-                    return null;
-                }
-                jsonString = buffer.toString();
-
-                JSONArray attractionsArray = new JSONArray(jsonString);
-
-                for (int i = 0; i < attractionsArray.length(); i++) {
-                    JSONObject attrJson = attractionsArray.getJSONObject(i);
-
-                    String name = attrJson.getString("name");
-                    String city = attrJson.getString("city");
-                    double rating = attrJson.getDouble("rating");
-                    String category = attrJson.getString("category");
-                    double price = attrJson.getDouble("price");
-                    double lat = attrJson.getDouble("lat");
-                    double lng = attrJson.getDouble("lng");
-                    String description = attrJson.getString("description");
-                    String imageName = attrJson.getString("imageName");
-
-                    if ("Historical".equals(category) || "Cultural".equals(category)) {
-                        int year = attrJson.optInt("year", 0);
-                        HistoricalSite site = new HistoricalSite(name, city, rating, lat, lng, description, imageName, year, price);
-                        loadedAttractions.add(site);
-
-                    } else if ("Natural".equals(category)) {
-                        String type = attrJson.getString("type");
-                        NaturalWonder wonder = new NaturalWonder(name, city, rating, lat, lng, description, imageName, type, price);
-                        loadedAttractions.add(wonder);
-                    } else if ("Adventure".equals(category)) {
-                        String activityType = attrJson.getString("activityType");
-                        AdventureSite adventure = new AdventureSite(name, city, rating, lat, lng, description, imageName, activityType, price);
-                        loadedAttractions.add(adventure);
-                    }
-                }
-                return loadedAttractions;
-
-            } catch (IOException e) {
-                Log.e("FetchDataTask", "Hiba a fájl olvasásánál", e);
-                return null;
-            } catch (JSONException e) {
-                Log.e("FetchDataTask", "Hiba a JSON feldogozásánál", e);
-                return null;
-            } finally {
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (final IOException e) {
-                        Log.e("FetchDataTask", "Hiba a reader bezárásakor", e);
-                    }
-                }
-            }
-        }
-
-        @Override
-        protected void onPostExecute(List<Attraction> loadedAttractions) {
-            super.onPostExecute(loadedAttractions);
-
-            if (loadedAttractions != null && !loadedAttractions.isEmpty()) {
-
-                for (Attraction attr : loadedAttractions) {
-                    dbHelper.addAttraction(attr);
-                }
-
-                attractionsDataList = dbHelper.getAllAttractions();
-
-                loadRecyclerViewData(attractionsDataList);
-
-                Log.d("AttractionListActivity", "Fájlból olvasás kész, adatbázis feltöltve " + attractionsDataList.size() + " elemmel.");
-            } else {
-                Log.e("AttractionListActivity", "Adatok olvasása sikertelen.");
-            }
-        }
-    }
 }

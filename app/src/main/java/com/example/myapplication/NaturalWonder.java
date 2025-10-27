@@ -4,6 +4,7 @@ public class NaturalWonder extends Attraction implements Dijkoteles {
 
     private String type;
     private double price;
+    public NaturalWonder() {}
 
     public NaturalWonder(String name, String city, double rating, double latitude, double longitude,
                          String description, String imageName,

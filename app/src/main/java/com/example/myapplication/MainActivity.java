@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,10 +18,33 @@ public class MainActivity extends AppCompatActivity {
         Button btnAdventure = findViewById(R.id.btn_adventure);
         Button btnShowAll = findViewById(R.id.btn_show_all);
 
-        btnHistorical.setOnClickListener(v -> startListActivity("Történelmi helyszín"));
-        btnNatural.setOnClickListener(v -> startListActivity("Természeti csoda"));
-        btnAdventure.setOnClickListener(v -> startListActivity("Adventure"));
-        btnShowAll.setOnClickListener(v -> startListActivity("Mind mutatása"));
+        btnHistorical.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startListActivity("Történelmi helyszín");
+            }
+        });
+
+        btnNatural.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startListActivity("Természeti csoda");
+            }
+        });
+
+        btnAdventure.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startListActivity("Adventure");
+            }
+        });
+
+        btnShowAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startListActivity("Mind mutatása");
+            }
+        });
     }
 
     private void startListActivity(String filter) {

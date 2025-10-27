@@ -4,6 +4,7 @@ public class AdventureSite extends Attraction implements Dijkoteles {
 
     private String activityType; // Pl: "bobpálya", "kalandpark", "síelés"
     private double price;
+    public AdventureSite() {}
 
     public AdventureSite(String name, String city, double rating, double latitude, double longitude,
                          String description, String imageName,

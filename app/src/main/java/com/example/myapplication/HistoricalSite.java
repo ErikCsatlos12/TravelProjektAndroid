@@ -5,6 +5,8 @@ public class HistoricalSite extends Attraction implements Dijkoteles {
     private int constructionYear;
     private double price;
 
+    public HistoricalSite() {}
+
 
     public HistoricalSite(String name, String city, double rating, double latitude, double longitude,
                           String description, String imageName,

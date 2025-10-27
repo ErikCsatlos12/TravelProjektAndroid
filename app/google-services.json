@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "406299756359",
+    "project_id": "erdelyvandor",
+    "storage_bucket": "erdelyvandor.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:406299756359:android:71972b172134ab2f2c2e62",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9KOPyDMPEVFu-UOj5U4Ly1IOOUx2RLQU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
