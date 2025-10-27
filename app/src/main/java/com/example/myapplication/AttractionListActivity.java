@@ -1,15 +1,23 @@
 package com.example.myapplication;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.app.AlertDialog;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,6 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class AttractionListActivity extends AppCompatActivity implements AttractionAdapter.OnItemClickListener {
@@ -30,14 +40,19 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
 
     private String currentFilter = "Mind mutatása";
 
+    private FusedLocationProviderClient fusedLocationClient;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 101;
+    private Location userLastLocation;
+    // ------------------------
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_list);
 
         recyclerView = findViewById(R.id.attractions_recycler_view);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        // 1. Megkapjuk az indító Activity-től átadott szűrőt (EZ A KEZDETI KATEGÓRIA)
         String initialFilter = getIntent().getStringExtra("INITIAL_FILTER");
         if (initialFilter != null) {
             currentFilter = initialFilter;
@@ -53,8 +68,7 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                 task.execute();
             } else {
                 Log.d("AttractionListActivity", "Adatbázis betöltve, " + attractionsDataList.size() + " elem.");
-                // Kezdeti szűrés és betöltés a kategória szerint
-                filterAndReloadData("Mind mutatása");
+                checkLocationPermissionAndGetLocation();
             }
 
         } catch (Exception e) {
@@ -62,28 +76,104 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
             e.printStackTrace();
         }
 
-        // Térkép gomb (Jobb lent)
         FloatingActionButton fabMap = findViewById(R.id.fab_map);
-        fabMap.setOnClickListener(view -> {
-            Intent intent = new Intent(AttractionListActivity.this, MapsActivity.class);
-            startActivity(intent);
+        fabMap.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View view) {
+                Intent intent = new Intent(AttractionListActivity.this, MapsActivity.class);
+                startActivity(intent);
+            }
         });
 
-        // SZŰRŐ GOMB (Bal lent)
         FloatingActionButton fabFilter = findViewById(R.id.fab_filter);
-        fabFilter.setOnClickListener(v -> {
-            showFilterDialog();
+        fabFilter.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) {
+                showFilterDialog();
+            }
         });
 
-        // VISSZA A FŐMENÜBE GOMB BEÁLLÍTÁSA
         FloatingActionButton fabBackHome = findViewById(R.id.fab_back_home);
-        fabBackHome.setOnClickListener(v -> {
-            finish();
+        fabBackHome.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) {
+                finish();
+            }
         });
+    }
+
+    // GPS / HELYMEGHATÁROZÁS LOGIKA
+
+    private void checkLocationPermissionAndGetLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            getLastLocation();
+        } else {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLastLocation();
+            } else {
+                Toast.makeText(this, "Helymeghatározás nélkül a távolság szerinti rendezés nem lehetséges.", Toast.LENGTH_LONG).show();
+                filterAndReloadData("Mind mutatása");
+            }
+        }
+    }
+
+    private void getLastLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            filterAndReloadData("Mind mutatása");
+            return;
+        }
+
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            userLastLocation = location;
+                            Log.d("Location", "Felhasználó helyzete: " + location.getLatitude() + ", " + location.getLongitude());
+                            filterAndReloadData("Mind mutatása");
+                        } else {
+                            Log.w("Location", "Nem sikerült utolsó helyzetet lekérni.");
+                            filterAndReloadData("Mind mutatása");
+                        }
+                    }
+                });
+    }
+
+
+     //Haversine-képlet)
+
+    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        final int R = 6371;
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
     }
 
 
     private void loadRecyclerViewData(List<Attraction> data) {
+        if (userLastLocation != null) {
+            Collections.sort(data, new Comparator<Attraction>() {
+                @Override
+                public int compare(Attraction a1, Attraction a2) {
+                    double dist1 = calculateDistance(userLastLocation.getLatitude(), userLastLocation.getLongitude(), a1.getLatitude(), a1.getLongitude());
+                    double dist2 = calculateDistance(userLastLocation.getLatitude(), userLastLocation.getLongitude(), a2.getLatitude(), a2.getLongitude());
+                    return Double.compare(dist1, dist2);
+                }
+            });
+        }
+
         adapter = new AttractionAdapter(data);
         adapter.setOnItemClickListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -117,14 +207,10 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
         builder.create().show();
     }
 
-    /**
-     * Kiszűri a látványosságokat a teljes listából, és frissíti a RecyclerView-t.
-     */
     private void filterAndReloadData(String priceFilter) {
         List<Attraction> fullList = dbHelper.getAllAttractions();
         List<Attraction> categoryFilteredList = new ArrayList<>();
 
-        // 1. Első lépés: KATEGÓRIA SZŰRÉS (Mindig az initialFilter szerint)
         for (Attraction attraction : fullList) {
             if (currentFilter.equals("Mind mutatása")) {
                 categoryFilteredList.add(attraction);
@@ -132,12 +218,11 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                 categoryFilteredList.add(attraction);
             } else if (currentFilter.equals("Természeti csoda") && attraction instanceof NaturalWonder) {
                 categoryFilteredList.add(attraction);
-            } else if (currentFilter.equals("Adventure") && attraction instanceof AdventureSite) { // <-- KALAND KATEGÓRIA TÁMOGATÁS
+            } else if (currentFilter.equals("Adventure") && attraction instanceof AdventureSite) {
                 categoryFilteredList.add(attraction);
             }
         }
-
-        // 2. Második lépés: ÁR SZERINTI SZŰRÉS a már szűrt listán
+        
         List<Attraction> finalFilteredList = new ArrayList<>();
 
         for (Attraction attraction : categoryFilteredList) {
@@ -154,7 +239,7 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                     isPriceMatch = true;
                 }
             } else if (priceFilter.equals("Ingyenes")) {
-                isPriceMatch = true; // Ingyenes, ha nem díjköteles
+                isPriceMatch = true;
             }
 
             if (isPriceMatch) {
@@ -162,7 +247,6 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
             }
         }
 
-        // Frissítjük az Adaptert az új, szűrt listával
         loadRecyclerViewData(finalFilteredList);
 
         Toast.makeText(this, "Találatok: " + finalFilteredList.size(), Toast.LENGTH_SHORT).show();
@@ -234,20 +318,8 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                     String description = attrJson.getString("description");
                     String imageName = attrJson.getString("imageName");
 
-                    // Ellenőrizzük, hogy az Adventure kategóriához tartozó egyedi mezők léteznek-e
-                    String activityType = "";
-                    if (category.equals("Adventure")) {
-                        // A kaland kategóriánál az activityType az AdventureSite konstruktorához szükséges
-                        if (attrJson.has("activityType")) {
-                            activityType = attrJson.getString("activityType");
-                        } else {
-                            Log.e("FetchDataTask", "Hiányzó activityType mező az Adventure kategóriánál!");
-                            continue; // Kihagyjuk ezt az elemet, ha hibás
-                        }
-                    }
-
-                    if ("Historical".equals(category)) {
-                        int year = attrJson.getInt("year");
+                    if ("Historical".equals(category) || "Cultural".equals(category)) {
+                        int year = attrJson.optInt("year", 0);
                         HistoricalSite site = new HistoricalSite(name, city, rating, lat, lng, description, imageName, year, price);
                         loadedAttractions.add(site);
 
@@ -256,6 +328,7 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                         NaturalWonder wonder = new NaturalWonder(name, city, rating, lat, lng, description, imageName, type, price);
                         loadedAttractions.add(wonder);
                     } else if ("Adventure".equals(category)) {
+                        String activityType = attrJson.getString("activityType");
                         AdventureSite adventure = new AdventureSite(name, city, rating, lat, lng, description, imageName, activityType, price);
                         loadedAttractions.add(adventure);
                     }
@@ -266,7 +339,7 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                 Log.e("FetchDataTask", "Hiba a fájl olvasásánál", e);
                 return null;
             } catch (JSONException e) {
-                Log.e("FetchDataTask", "Hiba a JSON feldogozásánál: " + e.getMessage(), e);
+                Log.e("FetchDataTask", "Hiba a JSON feldogozásánál", e);
                 return null;
             } finally {
                 if (reader != null) {
