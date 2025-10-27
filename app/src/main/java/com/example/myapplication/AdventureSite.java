@@ -2,8 +2,9 @@ package com.example.myapplication;
 
 public class AdventureSite extends Attraction implements Dijkoteles {
 
-    private String activityType; // Pl: "bobpálya", "kalandpark", "síelés"
+    private String activityType;
     private double price;
+
     public AdventureSite() {}
 
     public AdventureSite(String name, String city, double rating, double latitude, double longitude,
@@ -17,17 +18,29 @@ public class AdventureSite extends Attraction implements Dijkoteles {
 
     @Override
     public String getCategory() {
-
         return "Kaland (" + activityType + ")";
     }
+
 
     public String getActivityType() {
         return activityType;
     }
 
+    public void setActivityType(String activityType) { // ÚJ
+        this.activityType = activityType;
+    }
+
     @Override
     public double getAr() {
         return this.price;
+    }
+
+    public double getPrice() { // ÚJ
+        return price;
+    }
+
+    public void setPrice(double price) { // ÚJ
+        this.price = price;
     }
 
     @Override

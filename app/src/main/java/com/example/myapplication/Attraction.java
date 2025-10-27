@@ -1,6 +1,6 @@
 package com.example.myapplication;
 
-import com.google.firebase.firestore.PropertyName; // Fontos import a Firebase-hez
+import com.google.firebase.firestore.PropertyName;
 
 public abstract class Attraction {
 
@@ -11,7 +11,6 @@ public abstract class Attraction {
     private double longitude;
     private String description;
     private String imageName;
-
 
     public Attraction() {}
 
@@ -41,27 +40,15 @@ public abstract class Attraction {
     public String getImageName() { return imageName; }
     public void setImageName(String imageName) { this.imageName = imageName; }
 
-
-
     @PropertyName("lat")
-    public double getLatitude() {
-        return latitude;
-    }
-
+    public double getLatitude() { return latitude; }
     @PropertyName("lat")
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
+    public void setLatitude(double latitude) { this.latitude = latitude; }
 
     @PropertyName("lng")
-    public double getLongitude() {
-        return longitude;
-    }
-
+    public double getLongitude() { return longitude; }
     @PropertyName("lng")
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
+    public void setLongitude(double longitude) { this.longitude = longitude; }
 
     public abstract String getCategory();
 }

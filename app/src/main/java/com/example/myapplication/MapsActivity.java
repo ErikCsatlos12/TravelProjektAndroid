@@ -87,8 +87,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void placeMarkersOnMap() {
-        if (mMap == null) return; // Ha a térkép még nem áll készen
-
+        if (mMap == null) return;
         for (Attraction attr : attractionsList) {
             LatLng location = new LatLng(attr.getLatitude(), attr.getLongitude());
             mMap.addMarker(new MarkerOptions()

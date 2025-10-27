@@ -44,7 +44,7 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
     private FusedLocationProviderClient fusedLocationClient;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 101;
     private Location userLastLocation;
-    // ------------------------
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,7 +185,6 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
     }
 
     private void loadRecyclerViewData(List<Attraction> data) {
-        // TÁVOLSÁG SZERINTI RENDEZÉS
         if (userLastLocation != null) {
             Collections.sort(data, new Comparator<Attraction>() {
                 @Override
@@ -245,7 +244,6 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
             }
         }
 
-        // 2. ÁR SZERINTI SZŰRÉS
         List<Attraction> finalFilteredList = new ArrayList<>();
 
         for (Attraction attraction : categoryFilteredList) {
