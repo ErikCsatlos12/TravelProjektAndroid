@@ -8,10 +8,13 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,7 +25,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -51,43 +53,63 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_list);
 
+        Toolbar toolbar = findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
         recyclerView = findViewById(R.id.attractions_recycler_view);
         db = FirebaseFirestore.getInstance();
         fullAttractionList = new ArrayList<>();
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this); // GPS inicializálása
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         String initialFilter = getIntent().getStringExtra("INITIAL_FILTER");
         if (initialFilter != null) {
             currentFilter = initialFilter;
         }
 
+        setTitle(currentFilter);
+
         loadDataFromFirebase();
 
-        FloatingActionButton fabMap = findViewById(R.id.fab_map);
-        fabMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(AttractionListActivity.this, MapsActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        FloatingActionButton fabFilter = findViewById(R.id.fab_filter);
-        fabFilter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showFilterDialog();
-            }
-        });
-
-        FloatingActionButton fabBackHome = findViewById(R.id.fab_back_home);
-        fabBackHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Betölti a res/menu/list_menu.xml fájlt a Toolbar-ra
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.list_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            finish();
+            return true;
+        }
+
+        if (id == R.id.action_filter) {
+            showFilterDialog();
+            return true;
+        }
+
+        if (id == R.id.action_map) {
+            Intent intent = new Intent(AttractionListActivity.this, MapsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
     private void loadDataFromFirebase() {
         Toast.makeText(this, "Látványosságok letöltése a felhőből...", Toast.LENGTH_SHORT).show();
@@ -101,7 +123,6 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String category = document.getString("category");
                                 Attraction attraction = null;
-
                                 try {
                                     if ("Historical".equals(category) || "Cultural".equals(category)) {
                                         attraction = document.toObject(HistoricalSite.class);
@@ -110,7 +131,6 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                                     } else if ("Adventure".equals(category)) {
                                         attraction = document.toObject(AdventureSite.class);
                                     }
-
                                     if (attraction != null) {
                                         fullAttractionList.add(attraction);
                                     }
@@ -119,16 +139,13 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                                 }
                             }
                             Log.d("FirebaseData", "Sikeres letöltés: " + fullAttractionList.size() + " elem.");
-
                             checkLocationPermissionAndGetLocation();
-
                         } else {
                             Log.e("FirebaseData", "Hiba a Firebase adatok letöltésekor: ", task.getException());
                         }
                     }
                 });
     }
-
 
     private void checkLocationPermissionAndGetLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -172,7 +189,6 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                 });
     }
 
-    // Haversine képlet
     private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
         final int R = 6371;
         double latDistance = Math.toRadians(lat2 - lat1);
@@ -191,7 +207,7 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                 public int compare(Attraction a1, Attraction a2) {
                     double dist1 = calculateDistance(userLastLocation.getLatitude(), userLastLocation.getLongitude(), a1.getLatitude(), a1.getLongitude());
                     double dist2 = calculateDistance(userLastLocation.getLatitude(), userLastLocation.getLongitude(), a2.getLatitude(), a2.getLongitude());
-                    return Double.compare(dist1, dist2); // Növekvő sorrend (legközelebbi elöl)
+                    return Double.compare(dist1, dist2);
                 }
             });
             Toast.makeText(this, "Lista rendezve távolság szerint.", Toast.LENGTH_SHORT).show();
@@ -287,5 +303,4 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
 
         startActivity(intent);
     }
-
 }

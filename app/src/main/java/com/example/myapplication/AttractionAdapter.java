@@ -43,9 +43,7 @@ public class AttractionAdapter extends RecyclerView.Adapter<AttractionAdapter.At
 
         holder.nameTextView.setText(currentAttraction.getName());
         holder.cityTextView.setText(currentAttraction.getCity());
-
         holder.categoryTextView.setText(currentAttraction.getCategory());
-
 
         if (currentAttraction instanceof Dijkoteles) {
             double price = ((Dijkoteles) currentAttraction).getAr();
@@ -60,7 +58,6 @@ public class AttractionAdapter extends RecyclerView.Adapter<AttractionAdapter.At
         }
 
         String imageName = currentAttraction.getImageName();
-
         int imageResId = context.getResources().getIdentifier(
                 imageName, "drawable", context.getPackageName()
         );
@@ -95,12 +92,15 @@ public class AttractionAdapter extends RecyclerView.Adapter<AttractionAdapter.At
             cityTextView = itemView.findViewById(R.id.item_city_textview);
             categoryTextView = itemView.findViewById(R.id.item_category_textview);
             priceTextView = itemView.findViewById(R.id.item_price_textview);
-            imagePreview = itemView.findViewById(R.id.item_image_preview); // Kép előnézet regisztrálása
+            imagePreview = itemView.findViewById(R.id.item_image_preview);
 
-            itemView.setOnClickListener(v -> {
-                int position = getAdapterPosition();
-                if (listener != null && position != RecyclerView.NO_POSITION) {
-                    listener.onItemClick(attractionList.get(position));
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (listener != null && position != RecyclerView.NO_POSITION) {
+                        listener.onItemClick(attractionList.get(position));
+                    }
                 }
             });
         }

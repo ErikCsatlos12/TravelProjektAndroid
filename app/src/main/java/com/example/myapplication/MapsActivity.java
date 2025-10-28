@@ -1,8 +1,9 @@
 package com.example.myapplication;
 
-import androidx.annotation.NonNull; // Import
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
+import android.content.Intent; // Import
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -12,16 +13,17 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker; // Import
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.myapplication.databinding.ActivityMapsBinding;
-import com.google.android.gms.tasks.OnCompleteListener; // Import
-import com.google.android.gms.tasks.Task; // Import
-import com.google.firebase.firestore.FirebaseFirestore; // Import
-import com.google.firebase.firestore.QueryDocumentSnapshot; // Import
-import com.google.firebase.firestore.QuerySnapshot; // Import
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList; // Import
-import java.util.List; // Import
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -29,6 +31,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ActivityMapsBinding binding;
     private FirebaseFirestore db;
     private List<Attraction> attractionsList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +51,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         Toast.makeText(this, "Térkép betöltése a felhőből...", Toast.LENGTH_SHORT).show();
+
+        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
+
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(@NonNull Marker marker) {
+                Attraction attraction = (Attraction) marker.getTag();
+                if (attraction == null) {
+                    return;
+                }
+
+                Intent intent = new Intent(MapsActivity.this, AttractionDetailActivity.class);
+                intent.putExtra("NAME", attraction.getName());
+                intent.putExtra("CITY", attraction.getCity());
+                intent.putExtra("DESCRIPTION", attraction.getDescription());
+                intent.putExtra("IMAGE_NAME", attraction.getImageName());
+                intent.putExtra("RATING", attraction.getRating());
+                intent.putExtra("CATEGORY", attraction.getCategory());
+                intent.putExtra("LATITUDE", attraction.getLatitude());
+                intent.putExtra("LONGITUDE", attraction.getLongitude());
+                startActivity(intent);
+            }
+        });
 
         db.collection("attractions")
                 .get()
@@ -76,7 +102,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 }
                             }
                             Log.d("MapsActivity", "Firebase letöltés kész: " + attractionsList.size() + " elem.");
-
                             placeMarkersOnMap();
 
                         } else {
@@ -88,12 +113,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void placeMarkersOnMap() {
         if (mMap == null) return;
+
         for (Attraction attr : attractionsList) {
             LatLng location = new LatLng(attr.getLatitude(), attr.getLongitude());
-            mMap.addMarker(new MarkerOptions()
+
+            Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(location)
                     .title(attr.getName())
                     .snippet(attr.getCity()));
+
+            marker.setTag(attr);
         }
 
         if (!attractionsList.isEmpty()) {

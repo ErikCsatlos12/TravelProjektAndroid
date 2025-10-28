@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View; // Fontos import
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,17 +27,14 @@ public class AttractionDetailActivity extends AppCompatActivity {
         TextView detailCategory = findViewById(R.id.detail_category);
         TextView detailDescription = findViewById(R.id.detail_description);
         Button mapButton = findViewById(R.id.detail_map_button);
-
         FloatingActionButton fabHome = findViewById(R.id.fab_home);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-
             attractionName = extras.getString("NAME");
             String description = extras.getString("DESCRIPTION");
             String imageName = extras.getString("IMAGE_NAME");
             String category = extras.getString("CATEGORY");
-
             double rating = extras.getDouble("RATING");
             targetLatitude = extras.getDouble("LATITUDE");
             targetLongitude = extras.getDouble("LONGITUDE");
@@ -53,17 +51,22 @@ public class AttractionDetailActivity extends AppCompatActivity {
                 detailImage.setImageResource(R.drawable.ic_launcher_foreground);
             }
 
-            mapButton.setOnClickListener(v -> {
-                String uri = "google.navigation:q=" + targetLatitude + "," + targetLongitude;
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                mapIntent.setPackage("com.google.android.apps.maps");
-
-                startActivity(mapIntent);
+            mapButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String uri = "google.navigation:q=" + targetLatitude + "," + targetLongitude;
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                    mapIntent.setPackage("com.google.android.apps.maps");
+                    startActivity(mapIntent);
+                }
             });
         }
 
-        fabHome.setOnClickListener(v -> {
-            finish();
+        fabHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
         });
     }
 }
