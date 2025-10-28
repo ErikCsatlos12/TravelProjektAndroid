@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         btnAdventure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startListActivity("Adventure");
+                startListActivity("Kaland");
             }
         });
 

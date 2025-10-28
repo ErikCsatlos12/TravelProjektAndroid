@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +15,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -33,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 public class AttractionListActivity extends AppCompatActivity implements AttractionAdapter.OnItemClickListener {
 
@@ -41,7 +44,9 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
     private List<Attraction> fullAttractionList;
     private FirebaseFirestore db;
 
-    private String currentFilter = "Mind mutatása";
+    private String currentCategoryFilter = "Mind mutatása";
+    private String currentPriceFilter = "Mind mutatása";
+    private String currentSearchQuery = "";
 
     private FusedLocationProviderClient fusedLocationClient;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 101;
@@ -68,27 +73,49 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
 
         String initialFilter = getIntent().getStringExtra("INITIAL_FILTER");
         if (initialFilter != null) {
-            currentFilter = initialFilter;
+            currentCategoryFilter = initialFilter;
         }
 
-        setTitle(currentFilter);
+        setTitle(currentCategoryFilter);
 
         loadDataFromFirebase();
-
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Betölti a res/menu/list_menu.xml fájlt a Toolbar-ra
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.list_menu, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+
+        if (searchView != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    currentSearchQuery = query;
+                    applyFilters();
+                    searchView.clearFocus();
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    currentSearchQuery = newText;
+                    applyFilters();
+                    return true;
+                }
+            });
+        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
         int id = item.getItemId();
 
         if (id == android.R.id.home) {
@@ -147,6 +174,7 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                 });
     }
 
+
     private void checkLocationPermissionAndGetLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             getLastLocation();
@@ -163,14 +191,14 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                 getLastLocation();
             } else {
                 Toast.makeText(this, "Helymeghatározás nélkül a távolság szerinti rendezés nem lehetséges.", Toast.LENGTH_LONG).show();
-                filterAndReloadData("Mind mutatása");
+                applyFilters();
             }
         }
     }
 
     private void getLastLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            filterAndReloadData("Mind mutatása");
+            applyFilters();
             return;
         }
 
@@ -184,7 +212,7 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                         } else {
                             Log.w("Location", "Nem sikerült utolsó helyzetet lekérni (GPS ki van kapcsolva?).");
                         }
-                        filterAndReloadData("Mind mutatása");
+                        applyFilters();
                     }
                 });
     }
@@ -200,6 +228,7 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
         return R * c;
     }
 
+
     private void loadRecyclerViewData(List<Attraction> data) {
         if (userLastLocation != null) {
             Collections.sort(data, new Comparator<Attraction>() {
@@ -210,7 +239,6 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
                     return Double.compare(dist1, dist2);
                 }
             });
-            Toast.makeText(this, "Lista rendezve távolság szerint.", Toast.LENGTH_SHORT).show();
         }
 
         adapter = new AttractionAdapter(data);
@@ -224,14 +252,14 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
         final String[] filterOptions = {"Mind mutatása", "Ingyenes", "Fizetős"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Szűrés Ár Szerint (" + currentFilter + ")");
+        builder.setTitle("Szűrés Ár Szerint (" + currentCategoryFilter + ")");
 
         builder.setItems(filterOptions, new android.content.DialogInterface.OnClickListener() {
             @Override
             public void onClick(android.content.DialogInterface dialog, int which) {
-                String selectedFilter = filterOptions[which];
-                Toast.makeText(AttractionListActivity.this, "Ár szűrő beállítva: " + selectedFilter, Toast.LENGTH_SHORT).show();
-                filterAndReloadData(selectedFilter);
+                currentPriceFilter = filterOptions[which];
+                Toast.makeText(AttractionListActivity.this, "Ár szűrő beállítva: " + currentPriceFilter, Toast.LENGTH_SHORT).show();
+                applyFilters();
             }
         });
 
@@ -245,46 +273,59 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
         builder.create().show();
     }
 
-    private void filterAndReloadData(String priceFilter) {
-        List<Attraction> categoryFilteredList = new ArrayList<>();
+    private void applyFilters() {
+        List<Attraction> filteredList = new ArrayList<>();
+        String query = currentSearchQuery.toLowerCase(Locale.getDefault());
 
         for (Attraction attraction : fullAttractionList) {
-            if (currentFilter.equals("Mind mutatása")) {
-                categoryFilteredList.add(attraction);
-            } else if (currentFilter.equals("Történelmi helyszín") && attraction instanceof HistoricalSite) {
-                categoryFilteredList.add(attraction);
-            } else if (currentFilter.equals("Természeti csoda") && attraction instanceof NaturalWonder) {
-                categoryFilteredList.add(attraction);
-            } else if (currentFilter.equals("Adventure") && attraction instanceof AdventureSite) {
-                categoryFilteredList.add(attraction);
+
+            boolean categoryMatch = false;
+            if (currentCategoryFilter.equals("Mind mutatása")) {
+                categoryMatch = true;
+            } else if (currentCategoryFilter.equals("Történelmi helyszín") && attraction instanceof HistoricalSite) {
+                categoryMatch = true;
+            } else if (currentCategoryFilter.equals("Természeti csoda") && attraction instanceof NaturalWonder) {
+                categoryMatch = true;
+            } else if (currentCategoryFilter.equals("Kaland") && attraction instanceof AdventureSite) {
+                categoryMatch = true;
             }
-        }
 
-        List<Attraction> finalFilteredList = new ArrayList<>();
+            if (!categoryMatch) continue;
 
-        for (Attraction attraction : categoryFilteredList) {
-            boolean isPriceMatch = false;
-
-            if (priceFilter.equals("Mind mutatása")) {
-                isPriceMatch = true;
+            boolean priceMatch = false;
+            if (currentPriceFilter.equals("Mind mutatása")) {
+                priceMatch = true;
             } else if (attraction instanceof Dijkoteles) {
                 double ar = ((Dijkoteles) attraction).getAr();
-                if (priceFilter.equals("Ingyenes") && ar == 0.0) {
-                    isPriceMatch = true;
-                } else if (priceFilter.equals("Fizetős") && ar > 0.0) {
-                    isPriceMatch = true;
+                if (currentPriceFilter.equals("Ingyenes") && ar == 0.0) {
+                    priceMatch = true;
+                } else if (currentPriceFilter.equals("Fizetős") && ar > 0.0) {
+                    priceMatch = true;
                 }
-            } else if (priceFilter.equals("Ingyenes")) {
-                isPriceMatch = true;
+            } else if (currentPriceFilter.equals("Ingyenes")) {
+                priceMatch = true;
             }
 
-            if (isPriceMatch) {
-                finalFilteredList.add(attraction);
+            if (!priceMatch) continue;
+
+            boolean searchMatch = false;
+            if (query.isEmpty()) {
+                searchMatch = true;
+            } else {
+                if (attraction.getName().toLowerCase(Locale.getDefault()).contains(query) ||
+                        attraction.getCity().toLowerCase(Locale.getDefault()).contains(query) ||
+                        attraction.getCategory().toLowerCase(Locale.getDefault()).contains(query)) {
+                    searchMatch = true;
+                }
             }
+
+            if (!searchMatch) continue;
+
+            filteredList.add(attraction);
         }
 
-        loadRecyclerViewData(finalFilteredList);
-        Toast.makeText(this, "Találatok: " + finalFilteredList.size(), Toast.LENGTH_SHORT).show();
+        loadRecyclerViewData(filteredList);
+        Toast.makeText(this, "Találatok: " + filteredList.size(), Toast.LENGTH_SHORT).show();
     }
 
 
