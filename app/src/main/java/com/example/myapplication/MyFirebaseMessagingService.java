@@ -2,9 +2,9 @@ package com.example.myapplication;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent; // Import
+import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent; // Import
+import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
@@ -47,7 +47,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_IMMUTABLE); // Vagy FLAG_ONE_SHOT
+                PendingIntent.FLAG_IMMUTABLE);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -61,7 +61,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_launcher_foreground)
+                        .setSmallIcon(R.drawable.ic_notification_icon)
                         .setContentTitle(title)
                         .setContentText(messageBody)
                         .setAutoCancel(true)

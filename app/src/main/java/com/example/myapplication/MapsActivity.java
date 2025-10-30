@@ -3,7 +3,8 @@ package com.example.myapplication;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
-import android.content.Intent; // Import
+import android.content.Context; // <-- ÚJ IMPORT
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -13,7 +14,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker; // Import
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.myapplication.databinding.ActivityMapsBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,6 +34,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private List<Attraction> attractionsList;
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.onAttach(newBase));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -50,7 +56,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Toast.makeText(this, "Térkép betöltése a felhőből...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.toast_loading), Toast.LENGTH_SHORT).show(); // Ezt is lefordítottuk
 
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
 
@@ -68,7 +74,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 intent.putExtra("DESCRIPTION", attraction.getDescription());
                 intent.putExtra("IMAGE_NAME", attraction.getImageName());
                 intent.putExtra("RATING", attraction.getRating());
-                intent.putExtra("CATEGORY", attraction.getCategory());
+                intent.putExtra("CATEGORY", attraction.getCategory(MapsActivity.this));
                 intent.putExtra("LATITUDE", attraction.getLatitude());
                 intent.putExtra("LONGITUDE", attraction.getLongitude());
                 startActivity(intent);

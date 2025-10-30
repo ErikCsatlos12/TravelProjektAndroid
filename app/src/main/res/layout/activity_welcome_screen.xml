@@ -33,13 +33,14 @@
         app:layout_constraintTop_toBottomOf="@id/welcome_title"
         app:layout_constraintBottom_toTopOf="@id/btn_show_all"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
 
         <Button
             android:id="@+id/btn_historical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Történelmi helyszín"
+            android:text="@string/category_historical"
             android:textColor="@android:color/white"
             android:padding="16dp"
             android:layout_marginBottom="16dp"
@@ -50,7 +51,7 @@
             android:id="@+id/btn_natural"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Természeti csoda"
+            android:text="@string/category_natural"
             android:textColor="@android:color/white"
             android:padding="16dp"
             android:layout_marginBottom="16dp"
@@ -61,7 +62,7 @@
             android:id="@+id/btn_adventure"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Kaland"
+            android:text="@string/category_adventure"
             android:textColor="@android:color/white"
             android:padding="16dp"
             android:backgroundTint="@color/teal_700"
@@ -69,18 +70,36 @@
 
     </LinearLayout>
 
+
     <Button
         android:id="@+id/btn_show_all"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Összes látványosság mutatása"
+        android:text="@string/category_all"
         android:textColor="@android:color/white"
         android:padding="16dp"
         android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/category_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:backgroundTint="@color/teal_700" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_change_language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_language"
+        android:contentDescription="@string/change_language_button"
+        app:backgroundTint="@color/teal_700"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

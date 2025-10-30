@@ -3,19 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_search"
-        android:title="Keresés"
+        android:title="@string/menu_search"
         android:icon="@android:drawable/ic_menu_search"
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
     <item
         android:id="@+id/action_filter"
-        android:title="Szűrő"
+        android:title="@string/menu_filter"
         android:icon="@android:drawable/ic_menu_sort_by_size"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_map"
-        android:title="Térkép"
+        android:title="@string/menu_map"
         android:icon="@android:drawable/ic_dialog_map"
         app:showAsAction="ifRoom" />
 

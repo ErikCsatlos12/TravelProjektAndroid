@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Context; // <-- ÚJ IMPORT
 import com.google.firebase.firestore.PropertyName;
 
 public abstract class Attraction {
@@ -50,5 +51,5 @@ public abstract class Attraction {
     @PropertyName("lng")
     public void setLongitude(double longitude) { this.longitude = longitude; }
 
-    public abstract String getCategory();
+    public abstract String getCategory(Context context);
 }

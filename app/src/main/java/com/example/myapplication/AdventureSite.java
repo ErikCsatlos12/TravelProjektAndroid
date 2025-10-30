@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import android.content.Context;
+
 public class AdventureSite extends Attraction implements Dijkoteles {
 
     private String activityType;
@@ -17,8 +19,8 @@ public class AdventureSite extends Attraction implements Dijkoteles {
     }
 
     @Override
-    public String getCategory() {
-        return "Kaland (" + activityType + ")";
+    public String getCategory(Context context) {
+        return context.getString(R.string.category_adventure_format, activityType);
     }
 
 
@@ -26,7 +28,7 @@ public class AdventureSite extends Attraction implements Dijkoteles {
         return activityType;
     }
 
-    public void setActivityType(String activityType) { // ÚJ
+    public void setActivityType(String activityType) {
         this.activityType = activityType;
     }
 
@@ -35,11 +37,11 @@ public class AdventureSite extends Attraction implements Dijkoteles {
         return this.price;
     }
 
-    public double getPrice() { // ÚJ
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) { // ÚJ
+    public void setPrice(double price) {
         this.price = price;
     }
 

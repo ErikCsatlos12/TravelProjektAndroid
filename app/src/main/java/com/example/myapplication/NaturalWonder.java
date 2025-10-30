@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import android.content.Context;
+
 public class NaturalWonder extends Attraction implements Dijkoteles {
 
     private String type;
@@ -17,17 +19,15 @@ public class NaturalWonder extends Attraction implements Dijkoteles {
     }
 
     @Override
-    public String getCategory() {
-        return "Természeti csoda (" + type + ")";
+    public String getCategory(Context context) {
+        return context.getString(R.string.category_natural_format, type);
     }
-
-    // --- Getterek és Setterek (Firebase-hez kötelező) ---
 
     public String getType() {
         return type;
     }
 
-    public void setType(String type) { // ÚJ
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -36,11 +36,11 @@ public class NaturalWonder extends Attraction implements Dijkoteles {
         return this.price;
     }
 
-    public double getPrice() { // ÚJ
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) { // ÚJ
+    public void setPrice(double price) {
         this.price = price;
     }
 

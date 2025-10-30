@@ -12,7 +12,7 @@
         android:layout_height="60dp"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_launcher_foreground"
-        android:contentDescription="Előnézet" />
+        android:contentDescription="@string/cd_info_window_preview" />
 
     <LinearLayout
         android:layout_width="wrap_content"

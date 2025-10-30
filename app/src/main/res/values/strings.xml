@@ -1,12 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ErdélyVándor</string>
+    <string name="app_name" translatable="false">ErdélyVándor</string>
     <string name="welcome_message">Üdvözlünk, ErdélyVándor! Mit fedeznél fel ma?</string>
     <string name="title_activity_maps">Térkép</string>
 
     <string name="price_free">Ingyenes</string>
     <string name="price_format_ron">%1$.2f RON</string>
+
     <string name="category_historical">Történelmi helyszín</string>
+    <string name="category_natural">Természeti csoda</string>
+    <string name="category_adventure">Kaland</string>
+
     <string name="category_natural_format">Természeti csoda (%s)</string>
+    <string name="category_adventure_format">Kaland (%s)</string>
+
+    <string name="category_all">Összes látványosság mutatása</string>
+    <string name="detail_nav_button">Navigáció indítása</string>
+    <string name="change_language_button">Nyelv választás</string> <string name="menu_search">Keresés</string>
+    <string name="menu_filter">Szűrő</string>
+    <string name="menu_map">Térkép</string>
+
+    <string name="cd_back_button">Vissza a listára</string>
+    <string name="cd_attraction_image">A látványosság képe</string>
+    <string name="cd_info_window_preview">Látványosság előnézete</string>
+
+    <string name="filter_dialog_title">Szűrés Ár Szerint</string>
+    <string name="filter_option_all">Mind mutatása</string>
+    <string name="filter_option_free">Ingyenes</string>
+    <string name="filter_option_paid">Fizetős</string>
+    <string name="dialog_button_cancel">Mégse</string>
+
+    <string name="toast_loading">Látványosságok letöltése a felhőből...</string>
+    <string name="toast_filter_set">Ár szűrő beállítva:</string>
+    <string name="toast_results_found">Találatok: %d</string>
 
 </resources>

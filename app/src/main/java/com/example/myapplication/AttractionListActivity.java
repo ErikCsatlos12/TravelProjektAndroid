@@ -14,7 +14,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -37,7 +36,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-public class AttractionListActivity extends AppCompatActivity implements AttractionAdapter.OnItemClickListener {
+public class AttractionListActivity extends BaseActivity implements AttractionAdapter.OnItemClickListener {
 
     private RecyclerView recyclerView;
     private AttractionAdapter adapter;
@@ -45,7 +44,7 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
     private FirebaseFirestore db;
 
     private String currentCategoryFilter = "Mind mutatása";
-    private String currentPriceFilter = "Mind mutatása";
+    private String currentPriceFilter = "all";
     private String currentSearchQuery = "";
 
     private FusedLocationProviderClient fusedLocationClient;
@@ -76,7 +75,12 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
             currentCategoryFilter = initialFilter;
         }
 
-        setTitle(currentCategoryFilter);
+        if (!currentCategoryFilter.equals("Mind mutatása")) {
+            setTitle(currentCategoryFilter);
+        } else {
+            setTitle(getString(R.string.category_all));
+        }
+
 
         loadDataFromFirebase();
     }
@@ -139,7 +143,7 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
 
 
     private void loadDataFromFirebase() {
-        Toast.makeText(this, "Látványosságok letöltése a felhőből...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.toast_loading), Toast.LENGTH_SHORT).show();
 
         db.collection("attractions")
                 .get()
@@ -249,21 +253,35 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
 
 
     private void showFilterDialog() {
-        final String[] filterOptions = {"Mind mutatása", "Ingyenes", "Fizetős"};
+        final String[] filterKeys = {"all", "free", "paid"};
+
+        final String[] filterOptions = {
+                getString(R.string.filter_option_all),
+                getString(R.string.filter_option_free),
+                getString(R.string.filter_option_paid)
+        };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Szűrés Ár Szerint (" + currentCategoryFilter + ")");
+
+        String dialogTitle = getString(R.string.filter_dialog_title);
+        String categoryDisplay = currentCategoryFilter;
+
+        if (currentCategoryFilter.equals("Mind mutatása")) {
+            categoryDisplay = getString(R.string.filter_option_all);
+        }
+
+        builder.setTitle(dialogTitle + " (" + categoryDisplay + ")");
 
         builder.setItems(filterOptions, new android.content.DialogInterface.OnClickListener() {
             @Override
             public void onClick(android.content.DialogInterface dialog, int which) {
-                currentPriceFilter = filterOptions[which];
-                Toast.makeText(AttractionListActivity.this, "Ár szűrő beállítva: " + currentPriceFilter, Toast.LENGTH_SHORT).show();
+                currentPriceFilter = filterKeys[which];
+                Toast.makeText(AttractionListActivity.this, getString(R.string.toast_filter_set) + " " + filterOptions[which], Toast.LENGTH_SHORT).show();
                 applyFilters();
             }
         });
 
-        builder.setNegativeButton("Mégse", new android.content.DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.dialog_button_cancel), new android.content.DialogInterface.OnClickListener() {
             @Override
             public void onClick(android.content.DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -282,27 +300,27 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
             boolean categoryMatch = false;
             if (currentCategoryFilter.equals("Mind mutatása")) {
                 categoryMatch = true;
-            } else if (currentCategoryFilter.equals("Történelmi helyszín") && attraction instanceof HistoricalSite) {
+            } else if (currentCategoryFilter.equals(getString(R.string.category_historical)) && attraction instanceof HistoricalSite) {
                 categoryMatch = true;
-            } else if (currentCategoryFilter.equals("Természeti csoda") && attraction instanceof NaturalWonder) {
+            } else if (currentCategoryFilter.equals(getString(R.string.category_natural)) && attraction instanceof NaturalWonder) {
                 categoryMatch = true;
-            } else if (currentCategoryFilter.equals("Kaland") && attraction instanceof AdventureSite) {
+            } else if (currentCategoryFilter.equals(getString(R.string.category_adventure)) && attraction instanceof AdventureSite) {
                 categoryMatch = true;
             }
 
             if (!categoryMatch) continue;
 
             boolean priceMatch = false;
-            if (currentPriceFilter.equals("Mind mutatása")) {
+            if (currentPriceFilter.equals("all")) {
                 priceMatch = true;
             } else if (attraction instanceof Dijkoteles) {
                 double ar = ((Dijkoteles) attraction).getAr();
-                if (currentPriceFilter.equals("Ingyenes") && ar == 0.0) {
+                if (currentPriceFilter.equals("free") && ar == 0.0) {
                     priceMatch = true;
-                } else if (currentPriceFilter.equals("Fizetős") && ar > 0.0) {
+                } else if (currentPriceFilter.equals("paid") && ar > 0.0) {
                     priceMatch = true;
                 }
-            } else if (currentPriceFilter.equals("Ingyenes")) {
+            } else if (currentPriceFilter.equals("free")) {
                 priceMatch = true;
             }
 
@@ -314,7 +332,7 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
             } else {
                 if (attraction.getName().toLowerCase(Locale.getDefault()).contains(query) ||
                         attraction.getCity().toLowerCase(Locale.getDefault()).contains(query) ||
-                        attraction.getCategory().toLowerCase(Locale.getDefault()).contains(query)) {
+                        attraction.getCategory(AttractionListActivity.this).toLowerCase(Locale.getDefault()).contains(query)) {
                     searchMatch = true;
                 }
             }
@@ -325,7 +343,7 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
         }
 
         loadRecyclerViewData(filteredList);
-        Toast.makeText(this, "Találatok: " + filteredList.size(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.toast_results_found, filteredList.size()), Toast.LENGTH_SHORT).show();
     }
 
 
@@ -338,7 +356,7 @@ public class AttractionListActivity extends AppCompatActivity implements Attract
         intent.putExtra("DESCRIPTION", attraction.getDescription());
         intent.putExtra("IMAGE_NAME", attraction.getImageName());
         intent.putExtra("RATING", attraction.getRating());
-        intent.putExtra("CATEGORY", attraction.getCategory());
+        intent.putExtra("CATEGORY", attraction.getCategory(AttractionListActivity.this));
         intent.putExtra("LATITUDE", attraction.getLatitude());
         intent.putExtra("LONGITUDE", attraction.getLongitude());
 

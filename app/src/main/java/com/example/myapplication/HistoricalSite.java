@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import android.content.Context; // <-- ÚJ IMPORT
+
 public class HistoricalSite extends Attraction implements Dijkoteles {
 
     private int year;
@@ -17,17 +19,15 @@ public class HistoricalSite extends Attraction implements Dijkoteles {
     }
 
     @Override
-    public String getCategory() {
-        return "Történelmi helyszín";
+    public String getCategory(Context context) {
+        return context.getString(R.string.category_historical);
     }
-
-
 
     public int getYear() {
         return year;
     }
 
-    public void setYear(int year) { // ÚJ
+    public void setYear(int year) {
         this.year = year;
     }
 
@@ -36,13 +36,14 @@ public class HistoricalSite extends Attraction implements Dijkoteles {
         return this.price;
     }
 
-    public double getPrice() { // ÚJ
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) { // ÚJ
+    public void setPrice(double price) {
         this.price = price;
     }
+
 
     @Override
     public String getArInfo() {

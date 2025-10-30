@@ -43,7 +43,8 @@ public class AttractionAdapter extends RecyclerView.Adapter<AttractionAdapter.At
 
         holder.nameTextView.setText(currentAttraction.getName());
         holder.cityTextView.setText(currentAttraction.getCity());
-        holder.categoryTextView.setText(currentAttraction.getCategory());
+
+        holder.categoryTextView.setText(currentAttraction.getCategory(context));
 
         if (currentAttraction instanceof Dijkoteles) {
             double price = ((Dijkoteles) currentAttraction).getAr();

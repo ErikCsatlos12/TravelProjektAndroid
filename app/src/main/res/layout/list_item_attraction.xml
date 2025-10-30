@@ -20,7 +20,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/gyilkos_to"
-        android:contentDescription="Látványosság előnézete" />
+        android:contentDescription="@string/cd_attraction_image" />
 
     <TextView
         android:id="@+id/item_name_textview"

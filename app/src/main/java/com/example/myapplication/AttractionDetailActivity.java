@@ -3,14 +3,15 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View; // Fontos import
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
+// JAVÍTVA: Az extends már a mi BaseActivity-nket használja
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class AttractionDetailActivity extends AppCompatActivity {
+// JAVÍTVA: extends BaseActivity
+public class AttractionDetailActivity extends BaseActivity {
 
     private double targetLatitude;
     private double targetLongitude;

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_activity_maps">Hartă</string>
+    <string name="welcome_message">Bine ai venit, ErdélyVándor! Ce ai vrea să descoperi azi?</string>
+
+    <string name="price_free">Gratuit</string>
+    <string name="price_format_ron">%1$.2f RON</string>
+
+    <string name="category_historical">Locație istorică</string>
+    <string name="category_natural">Minune naturală</string>
+    <string name="category_adventure">Aventură</string>
+
+    <string name="category_natural_format">Minune naturală (%s)</string>
+    <string name="category_adventure_format">Aventură (%s)</string>
+
+    <string name="category_all">Arată toate atracțiile</string>
+    <string name="detail_nav_button">Pornește navigarea</string>
+    <string name="change_language_button">Schimbă limba</string>
+
+    <string name="menu_search">Caută</string>
+    <string name="menu_filter">Filtrează</string>
+    <string name="menu_map">Hartă</string>
+
+    <string name="cd_back_button">Înapoi la listă</string>
+    <string name="cd_attraction_image">Imaginea atracției</string>
+    <string name="cd_info_window_preview">Previzualizare atracție</string>
+
+    <string name="filter_dialog_title">Filtrare după preț</string>
+    <string name="filter_option_all">Arată tot</string>
+    <string name="filter_option_free">Gratuit</string>
+    <string name="filter_option_paid">Cu plată</string>
+    <string name="dialog_button_cancel">Anulează</string>
+
+    <string name="toast_loading">Se încarcă atracțiile din cloud...</string>
+    <string name="toast_filter_set">Filtru de preț setat:</string>
+    <string name="toast_results_found">Rezultate găsite: %d</string>
+
+</resources>

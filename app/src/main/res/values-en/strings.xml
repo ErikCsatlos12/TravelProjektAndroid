@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_activity_maps">Map</string>
+    <string name="welcome_message">Welcome, ErdélyVándor! What would you like to discover today?</string>
+
+    <string name="price_free">Free</string>
+    <string name="price_format_ron">%1$.2f RON</string>
+
+    <string name="category_historical">Historical site</string>
+    <string name="category_natural">Natural wonder</string>
+    <string name="category_adventure">Adventure</string>
+
+    <string name="category_natural_format">Natural wonder (%s)</string>
+    <string name="category_adventure_format">Adventure (%s)</string>
+
+    <string name="category_all">Show all attractions</string>
+    <string name="detail_nav_button">Start navigation</string>
+    <string name="change_language_button">Change Language</string> <string name="menu_search">Search</string>
+    <string name="menu_filter">Filter</string>
+    <string name="menu_map">Map</string>
+
+    <string name="cd_back_button">Back to list</string>
+    <string name="cd_attraction_image">Image of the attraction</string>
+    <string name="cd_info_window_preview">Attraction preview</string>
+
+    <string name="filter_dialog_title">Filter by Price</string>
+    <string name="filter_option_all">Show All</string>
+    <string name="filter_option_free">Free</string>
+    <string name="filter_option_paid">Paid</string>
+    <string name="dialog_button_cancel">Cancel</string>
+
+    <string name="toast_loading">Loading attractions from the cloud...</string>
+    <string name="toast_filter_set">Price filter set:</string>
+    <string name="toast_results_found">Results found: %d</string>
+
+</resources>
