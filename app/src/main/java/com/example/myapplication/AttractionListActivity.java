@@ -194,7 +194,7 @@ public class AttractionListActivity extends BaseActivity implements AttractionAd
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getLastLocation();
             } else {
-                Toast.makeText(this, "Helymeghatározás nélkül a távolság szerinti rendezés nem lehetséges.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.toast_location_permission_denied), Toast.LENGTH_LONG).show();
                 applyFilters();
             }
         }

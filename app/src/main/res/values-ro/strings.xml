@@ -34,5 +34,6 @@
     <string name="toast_loading">Se încarcă atracțiile din cloud...</string>
     <string name="toast_filter_set">Filtru de preț setat:</string>
     <string name="toast_results_found">Rezultate găsite: %d</string>
+    <string name="toast_location_permission_denied">Sortarea după distanță nu este disponibilă fără permisiunea de localizare.</string>
 
 </resources>

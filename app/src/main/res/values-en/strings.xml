@@ -32,5 +32,6 @@
     <string name="toast_loading">Loading attractions from the cloud...</string>
     <string name="toast_filter_set">Price filter set:</string>
     <string name="toast_results_found">Results found: %d</string>
+    <string name="toast_location_permission_denied">Sorting by distance is not available without location permission.</string>
 
 </resources>
