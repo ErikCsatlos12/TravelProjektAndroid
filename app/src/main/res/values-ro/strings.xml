@@ -1,39 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_activity_maps">Hartă</string>
-    <string name="welcome_message">Bine ai venit, ErdélyVándor! Ce ai vrea să descoperi azi?</string>
+    <string name="welcome_message">Bun venit, ErdélyVándor! Ce ai vrea să descoperi azi?</string>
 
     <string name="price_free">Gratuit</string>
-    <string name="price_format_ron">%1$.2f RON</string>
+    <string name="price_paid">Cu plată</string>
 
     <string name="category_historical">Locație istorică</string>
     <string name="category_natural">Minune naturală</string>
     <string name="category_adventure">Aventură</string>
+    <string name="category_walk">Plimbare</string>
 
     <string name="category_natural_format">Minune naturală (%s)</string>
     <string name="category_adventure_format">Aventură (%s)</string>
+    <string name="category_walk_format">Plimbare (%s)</string>
 
     <string name="category_all">Arată toate atracțiile</string>
-    <string name="detail_nav_button">Pornește navigarea</string>
+    <string name="detail_nav_button">Pornește navigația</string>
     <string name="change_language_button">Schimbă limba</string>
 
-    <string name="menu_search">Caută</string>
-    <string name="menu_filter">Filtrează</string>
+    <string name="menu_search">Căutare</string>
+    <string name="menu_filter">Filtru</string>
     <string name="menu_map">Hartă</string>
 
     <string name="cd_back_button">Înapoi la listă</string>
     <string name="cd_attraction_image">Imaginea atracției</string>
     <string name="cd_info_window_preview">Previzualizare atracție</string>
+    <string name="cd_price_info_button">Informații despre preț</string>
 
     <string name="filter_dialog_title">Filtrare după preț</string>
-    <string name="filter_option_all">Arată tot</string>
+    <string name="filter_option_all">Arată toate</string>
     <string name="filter_option_free">Gratuit</string>
     <string name="filter_option_paid">Cu plată</string>
-    <string name="dialog_button_cancel">Anulează</string>
+    <string name="dialog_button_cancel">Anulare</string>
+    <string name="dialog_button_ok">OK</string>
+
+    <string name="price_info_dialog_title">Informații preț</string>
+    <string name="price_info_dialog_message">Categoria "Cu plată" este doar în scop informativ. Pentru prețurile exacte ale biletelor, reduceri și programul de funcționare, vă rugăm să vă informați la fața locului sau pe site-ul oficial al atracției.</string>
 
     <string name="toast_loading">Se încarcă atracțiile din cloud...</string>
     <string name="toast_filter_set">Filtru de preț setat:</string>
     <string name="toast_results_found">Rezultate găsite: %d</string>
     <string name="toast_location_permission_denied">Sortarea după distanță nu este disponibilă fără permisiunea de localizare.</string>
+
+    <string name="distance_format_km">%.1f km</string>
 
 </resources>

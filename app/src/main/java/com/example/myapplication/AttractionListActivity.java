@@ -1,6 +1,5 @@
 package com.example.myapplication;
 
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.SearchManager;
@@ -15,19 +14,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -81,7 +81,6 @@ public class AttractionListActivity extends BaseActivity implements AttractionAd
         } else {
             setTitle(getString(R.string.category_all));
         }
-
 
         loadDataFromFirebase();
     }
@@ -162,6 +161,8 @@ public class AttractionListActivity extends BaseActivity implements AttractionAd
                                         attraction = document.toObject(NaturalWonder.class);
                                     } else if ("Adventure".equals(category)) {
                                         attraction = document.toObject(AdventureSite.class);
+                                    } else if ("Walk".equals(category)) {
+                                        attraction = document.toObject(Seta.class);
                                     }
                                     if (attraction != null) {
                                         fullAttractionList.add(attraction);
@@ -235,13 +236,21 @@ public class AttractionListActivity extends BaseActivity implements AttractionAd
 
 
     private void loadRecyclerViewData(List<Attraction> data) {
+
         if (userLastLocation != null) {
+
+            for (Attraction attraction : data) {
+                double dist = calculateDistance(
+                        userLastLocation.getLatitude(), userLastLocation.getLongitude(),
+                        attraction.getLatitude(), attraction.getLongitude()
+                );
+                attraction.setDistanceToUser(dist);
+            }
+
             Collections.sort(data, new Comparator<Attraction>() {
                 @Override
                 public int compare(Attraction a1, Attraction a2) {
-                    double dist1 = calculateDistance(userLastLocation.getLatitude(), userLastLocation.getLongitude(), a1.getLatitude(), a1.getLongitude());
-                    double dist2 = calculateDistance(userLastLocation.getLatitude(), userLastLocation.getLongitude(), a2.getLatitude(), a2.getLongitude());
-                    return Double.compare(dist1, dist2);
+                    return Double.compare(a1.getDistanceToUser(), a2.getDistanceToUser());
                 }
             });
         }
@@ -307,6 +316,8 @@ public class AttractionListActivity extends BaseActivity implements AttractionAd
                 categoryMatch = true;
             } else if (currentCategoryFilter.equals(getString(R.string.category_adventure)) && attraction instanceof AdventureSite) {
                 categoryMatch = true;
+            } else if (currentCategoryFilter.equals(getString(R.string.category_walk)) && attraction instanceof Seta) {
+                categoryMatch = true;
             }
 
             if (!categoryMatch) continue;
@@ -355,12 +366,25 @@ public class AttractionListActivity extends BaseActivity implements AttractionAd
         intent.putExtra("NAME", attraction.getLocalizedName(this));
         intent.putExtra("CITY", attraction.getLocalizedCity(this));
         intent.putExtra("DESCRIPTION", attraction.getLocalizedDescription(this));
-
         intent.putExtra("IMAGE_NAME", attraction.getImageName());
         intent.putExtra("RATING", attraction.getRating());
         intent.putExtra("CATEGORY", attraction.getCategory(this));
         intent.putExtra("LATITUDE", attraction.getLatitude());
         intent.putExtra("LONGITUDE", attraction.getLongitude());
+
+        if (attraction instanceof Seta) {
+            Seta seta = (Seta) attraction;
+            if (seta.getRoutePoints() != null && !seta.getRoutePoints().isEmpty()) {
+                ArrayList<Double> lats = new ArrayList<>();
+                ArrayList<Double> lngs = new ArrayList<>();
+                for (GeoPoint point : seta.getRoutePoints()) {
+                    lats.add(point.getLatitude());
+                    lngs.add(point.getLongitude());
+                }
+                intent.putExtra("ROUTE_LATS", lats);
+                intent.putExtra("ROUTE_LNGS", lngs);
+            }
+        }
 
         startActivity(intent);
     }

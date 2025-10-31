@@ -4,34 +4,45 @@
     <string name="welcome_message">Welcome, ErdélyVándor! What would you like to discover today?</string>
 
     <string name="price_free">Free</string>
-    <string name="price_format_ron">%1$.2f RON</string>
+    <string name="price_paid">Paid</string>
 
     <string name="category_historical">Historical site</string>
     <string name="category_natural">Natural wonder</string>
     <string name="category_adventure">Adventure</string>
+    <string name="category_walk">Walk</string>
 
     <string name="category_natural_format">Natural wonder (%s)</string>
     <string name="category_adventure_format">Adventure (%s)</string>
+    <string name="category_walk_format">Walk (%s)</string>
 
     <string name="category_all">Show all attractions</string>
     <string name="detail_nav_button">Start navigation</string>
-    <string name="change_language_button">Change Language</string> <string name="menu_search">Search</string>
+    <string name="change_language_button">Change Language</string>
+
+    <string name="menu_search">Search</string>
     <string name="menu_filter">Filter</string>
     <string name="menu_map">Map</string>
 
     <string name="cd_back_button">Back to list</string>
     <string name="cd_attraction_image">Image of the attraction</string>
     <string name="cd_info_window_preview">Attraction preview</string>
+    <string name="cd_price_info_button">Price information</string>
 
     <string name="filter_dialog_title">Filter by Price</string>
     <string name="filter_option_all">Show All</string>
     <string name="filter_option_free">Free</string>
     <string name="filter_option_paid">Paid</string>
     <string name="dialog_button_cancel">Cancel</string>
+    <string name="dialog_button_ok">OK</string>
+
+    <string name="price_info_dialog_title">Price Information</string>
+    <string name="price_info_dialog_message">The "Paid" category is for informational purposes only. For exact ticket prices, discounts, and opening hours, please inquire on-site or visit the attraction\'s official website.</string>
 
     <string name="toast_loading">Loading attractions from the cloud...</string>
     <string name="toast_filter_set">Price filter set:</string>
     <string name="toast_results_found">Results found: %d</string>
     <string name="toast_location_permission_denied">Sorting by distance is not available without location permission.</string>
+
+    <string name="distance_format_km">%.1f km</string>
 
 </resources>

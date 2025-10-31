@@ -49,7 +49,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/detail_rating"
@@ -63,12 +64,26 @@
 
                 <TextView
                     android:id="@+id/detail_category"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:textColor="@android:color/white"
-                    tools:text="Történelmi helyszín"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    tools:text="Történelmi helyszín (Nagyon Hosszú Altípus)"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:ellipsize="end"
+                    android:maxLines="1" />
+
+                <ImageButton
+                    android:id="@+id/info_price_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:src="@android:drawable/ic_dialog_info"
+                    app:tint="@android:color/white"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/cd_price_info_button" />
+
             </LinearLayout>
 
             <TextView
@@ -79,6 +94,22 @@
                 android:lineSpacingExtra="4dp"
                 android:textColor="@android:color/white"
                 tools:text="Itt jön a hosszú leírás a várról, a történetéről és a látnivalókról." />
+
+            <FrameLayout
+                android:id="@+id/map_container"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <fragment
+                    android:id="@+id/detail_map_fragment"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </FrameLayout>
 
             <Button
                 android:id="@+id/detail_map_button"

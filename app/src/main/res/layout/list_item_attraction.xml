@@ -11,7 +11,7 @@
     android:paddingBottom="16dp">
 
     <ImageView
-        android:id="@+id/item_image_preview"
+        android:id="@+id/item_image"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginTop="16dp"
@@ -23,53 +23,64 @@
         android:contentDescription="@string/cd_attraction_image" />
 
     <TextView
-        android:id="@+id/item_name_textview"
+        android:id="@+id/item_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:text="Látványosság Neve"
+        tools:text="Látványosság Neve"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textStyle="bold"
         android:textColor="@android:color/black"
-        app:layout_constraintEnd_toStartOf="@+id/item_image_preview"
+        app:layout_constraintEnd_toStartOf="@+id/item_image"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/item_city_textview"
+        android:id="@+id/item_city"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Város"
+        tools:text="Város"
         android:textColor="@android:color/black"
-        app:layout_constraintStart_toStartOf="@+id/item_name_textview"
-        app:layout_constraintTop_toBottomOf="@+id/item_name_textview" />
+        app:layout_constraintStart_toStartOf="@+id/item_name"
+        app:layout_constraintTop_toBottomOf="@+id/item_name" />
 
     <TextView
-        android:id="@+id/item_category_textview"
+        android:id="@+id/item_category"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Kategória"
+        tools:text="Kategória"
         android:textSize="14sp"
         android:textStyle="italic"
         android:textColor="@android:color/black"
-        app:layout_constraintStart_toStartOf="@+id/item_city_textview"
-        app:layout_constraintTop_toBottomOf="@+id/item_city_textview" />
+        app:layout_constraintStart_toStartOf="@+id/item_city"
+        app:layout_constraintTop_toBottomOf="@+id/item_city" />
 
     <TextView
-        android:id="@+id/item_price_textview"
+        android:id="@+id/item_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Ár"
+        tools:text="Ár"
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="@android:color/black"
-        app:layout_constraintStart_toStartOf="@+id/item_category_textview"
-        app:layout_constraintTop_toBottomOf="@+id/item_category_textview"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="@+id/item_category"
+        app:layout_constraintTop_toBottomOf="@+id/item_category" />
+
+    <TextView
+        android:id="@+id/item_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/item_image"
+        app:layout_constraintStart_toStartOf="@+id/item_image"
+        app:layout_constraintEnd_toEndOf="@+id/item_image"
+        tools:text="15.5 km" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,6 @@
 package com.example.myapplication;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +14,7 @@ public class AttractionAdapter extends RecyclerView.Adapter<AttractionAdapter.At
 
     private List<Attraction> attractionList;
     private OnItemClickListener listener;
-
-    public AttractionAdapter(List<Attraction> attractionList) {
-        this.attractionList = attractionList;
-    }
+    private Context context;
 
     public interface OnItemClickListener {
         void onItemClick(Attraction attraction);
@@ -28,44 +24,51 @@ public class AttractionAdapter extends RecyclerView.Adapter<AttractionAdapter.At
         this.listener = listener;
     }
 
+    public AttractionAdapter(List<Attraction> attractionList) {
+        this.attractionList = attractionList;
+    }
+
     @NonNull
     @Override
     public AttractionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item_attraction, parent, false);
-        return new AttractionViewHolder(itemView);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_attraction, parent, false);
+        context = parent.getContext();
+        return new AttractionViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull AttractionViewHolder holder, int position) {
         Attraction currentAttraction = attractionList.get(position);
-        Context context = holder.itemView.getContext();
 
         holder.nameTextView.setText(currentAttraction.getLocalizedName(context));
         holder.cityTextView.setText(currentAttraction.getLocalizedCity(context));
         holder.categoryTextView.setText(currentAttraction.getCategory(context));
 
         if (currentAttraction instanceof Dijkoteles) {
-            double price = ((Dijkoteles) currentAttraction).getAr();
+            double ar = ((Dijkoteles) currentAttraction).getAr();
 
-            if (price == 0) {
+            if (ar == 0.0) {
                 holder.priceTextView.setText(context.getString(R.string.price_free));
             } else {
-                holder.priceTextView.setText(context.getString(R.string.price_format_ron, price));
+                holder.priceTextView.setText(context.getString(R.string.price_paid));
             }
         } else {
             holder.priceTextView.setText(context.getString(R.string.price_free));
         }
 
-        String imageName = currentAttraction.getImageName();
-        int imageResId = context.getResources().getIdentifier(
-                imageName, "drawable", context.getPackageName()
-        );
-
+        int imageResId = context.getResources().getIdentifier(currentAttraction.getImageName(), "drawable", context.getPackageName());
         if (imageResId != 0) {
-            holder.imagePreview.setImageResource(imageResId);
+            holder.imageView.setImageResource(imageResId);
         } else {
-            holder.imagePreview.setImageResource(R.drawable.ic_launcher_foreground);
+            holder.imageView.setImageResource(R.drawable.ic_launcher_foreground);
+        }
+
+        double distance = currentAttraction.getDistanceToUser();
+        if (distance > 0) {
+            holder.distanceTextView.setText(context.getString(R.string.distance_format_km, distance));
+            holder.distanceTextView.setVisibility(View.VISIBLE);
+        } else {
+            holder.distanceTextView.setVisibility(View.GONE);
         }
     }
 
@@ -74,32 +77,31 @@ public class AttractionAdapter extends RecyclerView.Adapter<AttractionAdapter.At
         return attractionList.size();
     }
 
-    public void setFilterData(List<Attraction> newData) {
-        this.attractionList = newData;
-        notifyDataSetChanged();
-    }
-
     public class AttractionViewHolder extends RecyclerView.ViewHolder {
         public TextView nameTextView;
         public TextView cityTextView;
         public TextView categoryTextView;
         public TextView priceTextView;
-        public ImageView imagePreview;
+        public ImageView imageView;
+        public TextView distanceTextView;
 
-        public AttractionViewHolder(@NonNull View itemView) {
+        public AttractionViewHolder(View itemView) {
             super(itemView);
-            nameTextView = itemView.findViewById(R.id.item_name_textview);
-            cityTextView = itemView.findViewById(R.id.item_city_textview);
-            categoryTextView = itemView.findViewById(R.id.item_category_textview);
-            priceTextView = itemView.findViewById(R.id.item_price_textview);
-            imagePreview = itemView.findViewById(R.id.item_image_preview);
+            nameTextView = itemView.findViewById(R.id.item_name);
+            cityTextView = itemView.findViewById(R.id.item_city);
+            categoryTextView = itemView.findViewById(R.id.item_category);
+            priceTextView = itemView.findViewById(R.id.item_price);
+            imageView = itemView.findViewById(R.id.item_image);
+            distanceTextView = itemView.findViewById(R.id.item_distance);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (listener != null && position != RecyclerView.NO_POSITION) {
-                        listener.onItemClick(attractionList.get(position));
+                    if (listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onItemClick(attractionList.get(position));
+                        }
                     }
                 }
             });

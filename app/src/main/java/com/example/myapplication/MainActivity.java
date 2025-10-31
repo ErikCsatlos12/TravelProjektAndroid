@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -30,9 +29,9 @@ public class MainActivity extends BaseActivity {
         Button btnHistorical = findViewById(R.id.btn_historical);
         Button btnNatural = findViewById(R.id.btn_natural);
         Button btnAdventure = findViewById(R.id.btn_adventure);
+        Button btnWalk = findViewById(R.id.btn_walk);
         Button btnShowAll = findViewById(R.id.btn_show_all);
-
-        FloatingActionButton btnChangeLanguage = findViewById(R.id.btn_change_language);
+        FloatingActionButton btnChangeLanguage = findViewById(R.id.fab_change_language);
 
         btnHistorical.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,6 +51,13 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 startListActivity(getString(R.string.category_adventure));
+            }
+        });
+
+        btnWalk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startListActivity(getString(R.string.category_walk));
             }
         });
 
@@ -98,7 +104,6 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(android.content.DialogInterface dialog, int which) {
                 LocaleHelper.setLocale(MainActivity.this, languageCodes[which]);
-
                 recreate();
             }
         });
@@ -114,6 +119,7 @@ public class MainActivity extends BaseActivity {
 
 
     private void checkNotificationPermission() {
+        // JAVÍTVA: TISU -> TIRAMISU
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, NOTIFICATION_PERMISSION_REQUEST_CODE);

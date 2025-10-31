@@ -5,33 +5,45 @@
     <string name="title_activity_maps">Térkép</string>
 
     <string name="price_free">Ingyenes</string>
-    <string name="price_format_ron">%1$.2f RON</string>
+    <string name="price_paid">Fizetős</string>
 
     <string name="category_historical">Történelmi helyszín</string>
     <string name="category_natural">Természeti csoda</string>
     <string name="category_adventure">Kaland</string>
+    <string name="category_walk">Séta</string>
 
     <string name="category_natural_format">Természeti csoda (%s)</string>
     <string name="category_adventure_format">Kaland (%s)</string>
+    <string name="category_walk_format">Séta (%s)</string>
 
     <string name="category_all">Összes látványosság mutatása</string>
     <string name="detail_nav_button">Navigáció indítása</string>
-    <string name="change_language_button">Nyelv választás</string> <string name="menu_search">Keresés</string>
+    <string name="change_language_button">Nyelv választás</string>
+
+    <string name="menu_search">Keresés</string>
     <string name="menu_filter">Szűrő</string>
     <string name="menu_map">Térkép</string>
 
     <string name="cd_back_button">Vissza a listára</string>
     <string name="cd_attraction_image">A látványosság képe</string>
     <string name="cd_info_window_preview">Látványosság előnézete</string>
+    <string name="cd_price_info_button">Információ az árakról</string>
 
     <string name="filter_dialog_title">Szűrés Ár Szerint</string>
     <string name="filter_option_all">Mind mutatása</string>
     <string name="filter_option_free">Ingyenes</string>
     <string name="filter_option_paid">Fizetős</string>
     <string name="dialog_button_cancel">Mégse</string>
+    <string name="dialog_button_ok">Értem</string>
+
+    <string name="price_info_dialog_title">Ár Információ</string>
+    <string name="price_info_dialog_message">A "Fizetős" kategória tájékoztató jellegű. A pontos belépőárakról, kedvezményekről és nyitvatartásról kérjük, érdeklődjön a helyszínen vagy a látványosság hivatalos weboldalán.</string>
 
     <string name="toast_loading">Látványosságok letöltése a felhőből...</string>
     <string name="toast_filter_set">Ár szűrő beállítva:</string>
     <string name="toast_results_found">Találatok: %d</string>
     <string name="toast_location_permission_denied">Helymeghatározás nélkül a távolság szerinti rendezés nem lehetséges.</string>
+
+    <string name="distance_format_km">%.1f km</string>
+
 </resources>

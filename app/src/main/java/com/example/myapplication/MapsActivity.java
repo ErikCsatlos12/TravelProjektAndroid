@@ -20,6 +20,7 @@ import com.example.myapplication.databinding.ActivityMapsBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -69,17 +70,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
 
                 Intent intent = new Intent(MapsActivity.this, AttractionDetailActivity.class);
-
-                // JAVÍTVA: Lokalizált getterek használata az Intent-ben
                 intent.putExtra("NAME", attraction.getLocalizedName(MapsActivity.this));
                 intent.putExtra("CITY", attraction.getLocalizedCity(MapsActivity.this));
                 intent.putExtra("DESCRIPTION", attraction.getLocalizedDescription(MapsActivity.this));
-
                 intent.putExtra("IMAGE_NAME", attraction.getImageName());
                 intent.putExtra("RATING", attraction.getRating());
                 intent.putExtra("CATEGORY", attraction.getCategory(MapsActivity.this));
                 intent.putExtra("LATITUDE", attraction.getLatitude());
                 intent.putExtra("LONGITUDE", attraction.getLongitude());
+
+                if (attraction instanceof Seta) {
+                    Seta seta = (Seta) attraction;
+                    if (seta.getRoutePoints() != null && !seta.getRoutePoints().isEmpty()) {
+                        ArrayList<Double> lats = new ArrayList<>();
+                        ArrayList<Double> lngs = new ArrayList<>();
+                        for (GeoPoint point : seta.getRoutePoints()) {
+                            lats.add(point.getLatitude());
+                            lngs.add(point.getLongitude());
+                        }
+                        intent.putExtra("ROUTE_LATS", lats);
+                        intent.putExtra("ROUTE_LNGS", lngs);
+                    }
+                }
+
                 startActivity(intent);
             }
         });
@@ -101,6 +114,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                         attraction = document.toObject(NaturalWonder.class);
                                     } else if ("Adventure".equals(category)) {
                                         attraction = document.toObject(AdventureSite.class);
+                                    } else if ("Walk".equals(category)) {
+                                        attraction = document.toObject(Seta.class);
                                     }
 
                                     if (attraction != null) {
@@ -123,19 +138,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void placeMarkersOnMap() {
         if (mMap == null) return;
 
+        LatLng firstLocation = null;
+
         for (Attraction attr : attractionsList) {
             LatLng location = new LatLng(attr.getLatitude(), attr.getLongitude());
-
             Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(location)
                     .title(attr.getLocalizedName(this))
                     .snippet(attr.getLocalizedCity(this)));
-
             marker.setTag(attr);
+
+            if(firstLocation == null) {
+                firstLocation = location;
+            }
         }
 
-        if (!attractionsList.isEmpty()) {
-            LatLng firstLocation = new LatLng(attractionsList.get(0).getLatitude(), attractionsList.get(0).getLongitude());
+        if (firstLocation != null) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(firstLocation, 10f));
         } else {
             LatLng targuMures = new LatLng(46.545, 24.5625);

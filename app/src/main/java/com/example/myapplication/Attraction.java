@@ -1,7 +1,8 @@
 package com.example.myapplication;
 
 import android.content.Context;
-import com.google.firebase.firestore.PropertyName; // <-- FONTOS IMPORT
+import com.google.firebase.firestore.Exclude;
+import com.google.firebase.firestore.PropertyName;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +15,8 @@ public abstract class Attraction {
     private double rating;
     private double latitude;
     private double longitude;
+
+    private double distanceToUser = 0.0;
 
     public Attraction() {
         this.name = new HashMap<>();
@@ -48,7 +51,6 @@ public abstract class Attraction {
 
     public abstract String getCategory(Context context);
 
-
     public Map<String, String> getName() { return name; }
     public void setName(Map<String, String> name) { this.name = name; }
 
@@ -82,5 +84,14 @@ public abstract class Attraction {
     }
     public String getLocalizedDescription(Context context) {
         return getLocalizedValue(this.description, context);
+    }
+
+    @Exclude
+    public double getDistanceToUser() {
+        return distanceToUser;
+    }
+
+    public void setDistanceToUser(double distanceToUser) {
+        this.distanceToUser = distanceToUser;
     }
 }
