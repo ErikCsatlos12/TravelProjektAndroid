@@ -1,39 +1,48 @@
 package com.example.myapplication;
 
-import android.content.Context; // <-- ÚJ IMPORT
+import android.content.Context;
+import java.util.Map;
 
 public class HistoricalSite extends Attraction implements Dijkoteles {
 
-    private int year;
+    private Map<String, String> type;
     private double price;
 
-    public HistoricalSite() {}
+    public HistoricalSite() {
+        super();
+    }
 
-    public HistoricalSite(String name, String city, double rating, double latitude, double longitude,
-                          String description, String imageName,
-                          int year, double price) {
-
+    public HistoricalSite(Map<String, String> name, Map<String, String> city, double rating, double latitude, double longitude, Map<String, String> description, String imageName, Map<String, String> type, double price) {
         super(name, city, rating, latitude, longitude, description, imageName);
-        this.year = year;
+        this.type = type;
         this.price = price;
     }
 
     @Override
     public String getCategory(Context context) {
-        return context.getString(R.string.category_historical);
+        return context.getString(R.string.category_historical) + " (" + getLocalizedValue(this.type, context) + ")";
     }
 
-    public int getYear() {
-        return year;
+    public Map<String, String> getType() {
+        return type;
     }
 
-    public void setYear(int year) {
-        this.year = year;
+    public void setType(Map<String, String> type) {
+        this.type = type;
+    }
+
+    public String getLocalizedType(Context context) {
+        return getLocalizedValue(this.type, context);
     }
 
     @Override
     public double getAr() {
         return this.price;
+    }
+
+    @Override
+    public String getArInfo() {
+        return (price == 0.0) ? "Ingyenes" : String.format("%.2f RON", price);
     }
 
     public double getPrice() {
@@ -42,14 +51,5 @@ public class HistoricalSite extends Attraction implements Dijkoteles {
 
     public void setPrice(double price) {
         this.price = price;
-    }
-
-
-    @Override
-    public String getArInfo() {
-        if (price == 0) {
-            return "Ingyenes";
-        }
-        return price + " RON";
     }
 }

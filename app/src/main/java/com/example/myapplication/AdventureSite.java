@@ -1,18 +1,18 @@
 package com.example.myapplication;
 
 import android.content.Context;
+import java.util.Map;
 
 public class AdventureSite extends Attraction implements Dijkoteles {
 
-    private String activityType;
+    private Map<String, String> activityType;
     private double price;
 
-    public AdventureSite() {}
+    public AdventureSite() {
+        super();
+    }
 
-    public AdventureSite(String name, String city, double rating, double latitude, double longitude,
-                         String description, String imageName,
-                         String activityType, double price) {
-
+    public AdventureSite(Map<String, String> name, Map<String, String> city, double rating, double latitude, double longitude, Map<String, String> description, String imageName, Map<String, String> activityType, double price) {
         super(name, city, rating, latitude, longitude, description, imageName);
         this.activityType = activityType;
         this.price = price;
@@ -20,21 +20,30 @@ public class AdventureSite extends Attraction implements Dijkoteles {
 
     @Override
     public String getCategory(Context context) {
-        return context.getString(R.string.category_adventure_format, activityType);
+        String localizedActivityType = getLocalizedValue(this.activityType, context);
+        return context.getString(R.string.category_adventure_format, localizedActivityType);
     }
 
-
-    public String getActivityType() {
+    public Map<String, String> getActivityType() {
         return activityType;
     }
 
-    public void setActivityType(String activityType) {
+    public void setActivityType(Map<String, String> activityType) {
         this.activityType = activityType;
+    }
+
+    public String getLocalizedActivityType(Context context) {
+        return getLocalizedValue(this.activityType, context);
     }
 
     @Override
     public double getAr() {
         return this.price;
+    }
+
+    @Override
+    public String getArInfo() {
+        return (price == 0.0) ? "Ingyenes" : String.format("%.2f RON", price);
     }
 
     public double getPrice() {
@@ -43,13 +52,5 @@ public class AdventureSite extends Attraction implements Dijkoteles {
 
     public void setPrice(double price) {
         this.price = price;
-    }
-
-    @Override
-    public String getArInfo() {
-        if (price == 0) {
-            return "Ingyenes";
-        }
-        return price + " RON";
     }
 }

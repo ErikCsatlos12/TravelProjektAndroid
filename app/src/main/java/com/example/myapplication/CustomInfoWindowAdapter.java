@@ -29,8 +29,8 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         TextView city = view.findViewById(R.id.info_window_city);
         ImageView image = view.findViewById(R.id.info_window_image);
 
-        title.setText(attraction.getName());
-        city.setText(attraction.getCity());
+        title.setText(attraction.getLocalizedName(mContext));
+        city.setText(attraction.getLocalizedCity(mContext));
 
 
         String imageName = attraction.getImageName();
@@ -41,7 +41,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         if (imageResId != 0) {
             image.setImageResource(imageResId);
         } else {
-            image.setImageResource(R.drawable.ic_launcher_foreground); // Alapértelmezett kép
+            image.setImageResource(R.drawable.ic_launcher_foreground);
             Log.e("InfoWindowAdapter", "Kép nem található: " + imageName);
         }
     }

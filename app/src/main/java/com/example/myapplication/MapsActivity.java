@@ -3,7 +3,7 @@ package com.example.myapplication;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
-import android.content.Context; // <-- ÚJ IMPORT
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -56,7 +56,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Toast.makeText(this, getString(R.string.toast_loading), Toast.LENGTH_SHORT).show(); // Ezt is lefordítottuk
+        Toast.makeText(this, getString(R.string.toast_loading), Toast.LENGTH_SHORT).show();
 
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
 
@@ -69,9 +69,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
 
                 Intent intent = new Intent(MapsActivity.this, AttractionDetailActivity.class);
-                intent.putExtra("NAME", attraction.getName());
-                intent.putExtra("CITY", attraction.getCity());
-                intent.putExtra("DESCRIPTION", attraction.getDescription());
+
+                // JAVÍTVA: Lokalizált getterek használata az Intent-ben
+                intent.putExtra("NAME", attraction.getLocalizedName(MapsActivity.this));
+                intent.putExtra("CITY", attraction.getLocalizedCity(MapsActivity.this));
+                intent.putExtra("DESCRIPTION", attraction.getLocalizedDescription(MapsActivity.this));
+
                 intent.putExtra("IMAGE_NAME", attraction.getImageName());
                 intent.putExtra("RATING", attraction.getRating());
                 intent.putExtra("CATEGORY", attraction.getCategory(MapsActivity.this));
@@ -125,8 +128,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(location)
-                    .title(attr.getName())
-                    .snippet(attr.getCity()));
+                    .title(attr.getLocalizedName(this))
+                    .snippet(attr.getLocalizedCity(this)));
 
             marker.setTag(attr);
         }

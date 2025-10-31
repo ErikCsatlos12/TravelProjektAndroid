@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.SearchManager;
@@ -330,9 +331,9 @@ public class AttractionListActivity extends BaseActivity implements AttractionAd
             if (query.isEmpty()) {
                 searchMatch = true;
             } else {
-                if (attraction.getName().toLowerCase(Locale.getDefault()).contains(query) ||
-                        attraction.getCity().toLowerCase(Locale.getDefault()).contains(query) ||
-                        attraction.getCategory(AttractionListActivity.this).toLowerCase(Locale.getDefault()).contains(query)) {
+                if (attraction.getLocalizedName(this).toLowerCase(Locale.getDefault()).contains(query) ||
+                        attraction.getLocalizedCity(this).toLowerCase(Locale.getDefault()).contains(query) ||
+                        attraction.getCategory(this).toLowerCase(Locale.getDefault()).contains(query)) {
                     searchMatch = true;
                 }
             }
@@ -351,12 +352,13 @@ public class AttractionListActivity extends BaseActivity implements AttractionAd
     public void onItemClick(Attraction attraction) {
         Intent intent = new Intent(this, AttractionDetailActivity.class);
 
-        intent.putExtra("NAME", attraction.getName());
-        intent.putExtra("CITY", attraction.getCity());
-        intent.putExtra("DESCRIPTION", attraction.getDescription());
+        intent.putExtra("NAME", attraction.getLocalizedName(this));
+        intent.putExtra("CITY", attraction.getLocalizedCity(this));
+        intent.putExtra("DESCRIPTION", attraction.getLocalizedDescription(this));
+
         intent.putExtra("IMAGE_NAME", attraction.getImageName());
         intent.putExtra("RATING", attraction.getRating());
-        intent.putExtra("CATEGORY", attraction.getCategory(AttractionListActivity.this));
+        intent.putExtra("CATEGORY", attraction.getCategory(this));
         intent.putExtra("LATITUDE", attraction.getLatitude());
         intent.putExtra("LONGITUDE", attraction.getLongitude());
 

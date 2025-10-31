@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,12 +39,10 @@ public class AttractionAdapter extends RecyclerView.Adapter<AttractionAdapter.At
     @Override
     public void onBindViewHolder(@NonNull AttractionViewHolder holder, int position) {
         Attraction currentAttraction = attractionList.get(position);
-
         Context context = holder.itemView.getContext();
 
-        holder.nameTextView.setText(currentAttraction.getName());
-        holder.cityTextView.setText(currentAttraction.getCity());
-
+        holder.nameTextView.setText(currentAttraction.getLocalizedName(context));
+        holder.cityTextView.setText(currentAttraction.getLocalizedCity(context));
         holder.categoryTextView.setText(currentAttraction.getCategory(context));
 
         if (currentAttraction instanceof Dijkoteles) {
