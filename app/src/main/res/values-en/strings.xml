@@ -18,6 +18,7 @@
     <string name="category_all">Show all attractions</string>
     <string name="detail_nav_button">Start navigation</string>
     <string name="change_language_button">Change Language</string>
+    <string name="detail_walk_button">Start Walk</string>
 
     <string name="menu_search">Search</string>
     <string name="menu_filter">Filter</string>
@@ -42,6 +43,7 @@
     <string name="toast_filter_set">Price filter set:</string>
     <string name="toast_results_found">Results found: %d</string>
     <string name="toast_location_permission_denied">Sorting by distance is not available without location permission.</string>
+    <string name="toast_no_app_for_route">No app installed to open this route.</string>
 
     <string name="distance_format_km">%.1f km</string>
 

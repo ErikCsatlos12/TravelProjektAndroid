@@ -119,7 +119,7 @@ public class MainActivity extends BaseActivity {
 
 
     private void checkNotificationPermission() {
-        // JAVÍTVA: TISU -> TIRAMISU
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, NOTIFICATION_PERMISSION_REQUEST_CODE);

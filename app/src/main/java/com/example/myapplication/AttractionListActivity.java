@@ -165,6 +165,7 @@ public class AttractionListActivity extends BaseActivity implements AttractionAd
                                         attraction = document.toObject(Seta.class);
                                     }
                                     if (attraction != null) {
+                                        attraction.setDocumentId(document.getId());
                                         fullAttractionList.add(attraction);
                                     }
                                 } catch (Exception e) {
@@ -308,8 +309,11 @@ public class AttractionListActivity extends BaseActivity implements AttractionAd
         for (Attraction attraction : fullAttractionList) {
 
             boolean categoryMatch = false;
+
             if (currentCategoryFilter.equals("Mind mutatása")) {
-                categoryMatch = true;
+                if (!(attraction instanceof Seta)) {
+                    categoryMatch = true;
+                }
             } else if (currentCategoryFilter.equals(getString(R.string.category_historical)) && attraction instanceof HistoricalSite) {
                 categoryMatch = true;
             } else if (currentCategoryFilter.equals(getString(R.string.category_natural)) && attraction instanceof NaturalWonder) {
@@ -362,30 +366,7 @@ public class AttractionListActivity extends BaseActivity implements AttractionAd
     @Override
     public void onItemClick(Attraction attraction) {
         Intent intent = new Intent(this, AttractionDetailActivity.class);
-
-        intent.putExtra("NAME", attraction.getLocalizedName(this));
-        intent.putExtra("CITY", attraction.getLocalizedCity(this));
-        intent.putExtra("DESCRIPTION", attraction.getLocalizedDescription(this));
-        intent.putExtra("IMAGE_NAME", attraction.getImageName());
-        intent.putExtra("RATING", attraction.getRating());
-        intent.putExtra("CATEGORY", attraction.getCategory(this));
-        intent.putExtra("LATITUDE", attraction.getLatitude());
-        intent.putExtra("LONGITUDE", attraction.getLongitude());
-
-        if (attraction instanceof Seta) {
-            Seta seta = (Seta) attraction;
-            if (seta.getRoutePoints() != null && !seta.getRoutePoints().isEmpty()) {
-                ArrayList<Double> lats = new ArrayList<>();
-                ArrayList<Double> lngs = new ArrayList<>();
-                for (GeoPoint point : seta.getRoutePoints()) {
-                    lats.add(point.getLatitude());
-                    lngs.add(point.getLongitude());
-                }
-                intent.putExtra("ROUTE_LATS", lats);
-                intent.putExtra("ROUTE_LNGS", lngs);
-            }
-        }
-
+        intent.putExtra("ATTRACTION_ID", attraction.getDocumentId());
         startActivity(intent);
     }
 }

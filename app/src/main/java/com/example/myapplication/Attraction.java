@@ -8,6 +8,9 @@ import java.util.Map;
 
 public abstract class Attraction {
 
+    @Exclude
+    private String documentId;
+
     private Map<String, String> name;
     private Map<String, String> city;
     private Map<String, String> description;
@@ -16,6 +19,7 @@ public abstract class Attraction {
     private double latitude;
     private double longitude;
 
+    @Exclude
     private double distanceToUser = 0.0;
 
     public Attraction() {
@@ -50,6 +54,15 @@ public abstract class Attraction {
     }
 
     public abstract String getCategory(Context context);
+
+    @Exclude
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
+    }
 
     public Map<String, String> getName() { return name; }
     public void setName(Map<String, String> name) { this.name = name; }

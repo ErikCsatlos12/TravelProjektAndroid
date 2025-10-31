@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class Seta extends Attraction implements Dijkoteles {
 
-    private List<GeoPoint> routePoints;
+    private List<GeoPoint> waypoints;
     private Map<String, String> difficulty;
 
     public Seta() {
@@ -16,10 +16,10 @@ public class Seta extends Attraction implements Dijkoteles {
 
     public Seta(Map<String, String> name, Map<String, String> city, double rating, double latitude, double longitude,
                 Map<String, String> description, String imageName,
-                List<GeoPoint> routePoints, Map<String, String> difficulty) {
+                List<GeoPoint> waypoints, Map<String, String> difficulty) {
 
         super(name, city, rating, latitude, longitude, description, imageName);
-        this.routePoints = routePoints;
+        this.waypoints = waypoints;
         this.difficulty = difficulty;
     }
 
@@ -29,12 +29,12 @@ public class Seta extends Attraction implements Dijkoteles {
         return context.getString(R.string.category_walk_format, localizedDifficulty);
     }
 
-    public List<GeoPoint> getRoutePoints() {
-        return routePoints;
+    public List<GeoPoint> getWaypoints() {
+        return waypoints;
     }
 
-    public void setRoutePoints(List<GeoPoint> routePoints) {
-        this.routePoints = routePoints;
+    public void setWaypoints(List<GeoPoint> waypoints) {
+        this.waypoints = waypoints;
     }
 
     public Map<String, String> getDifficulty() {

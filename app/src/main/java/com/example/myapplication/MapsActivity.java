@@ -20,7 +20,6 @@ import com.example.myapplication.databinding.ActivityMapsBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -70,29 +69,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
 
                 Intent intent = new Intent(MapsActivity.this, AttractionDetailActivity.class);
-                intent.putExtra("NAME", attraction.getLocalizedName(MapsActivity.this));
-                intent.putExtra("CITY", attraction.getLocalizedCity(MapsActivity.this));
-                intent.putExtra("DESCRIPTION", attraction.getLocalizedDescription(MapsActivity.this));
-                intent.putExtra("IMAGE_NAME", attraction.getImageName());
-                intent.putExtra("RATING", attraction.getRating());
-                intent.putExtra("CATEGORY", attraction.getCategory(MapsActivity.this));
-                intent.putExtra("LATITUDE", attraction.getLatitude());
-                intent.putExtra("LONGITUDE", attraction.getLongitude());
-
-                if (attraction instanceof Seta) {
-                    Seta seta = (Seta) attraction;
-                    if (seta.getRoutePoints() != null && !seta.getRoutePoints().isEmpty()) {
-                        ArrayList<Double> lats = new ArrayList<>();
-                        ArrayList<Double> lngs = new ArrayList<>();
-                        for (GeoPoint point : seta.getRoutePoints()) {
-                            lats.add(point.getLatitude());
-                            lngs.add(point.getLongitude());
-                        }
-                        intent.putExtra("ROUTE_LATS", lats);
-                        intent.putExtra("ROUTE_LNGS", lngs);
-                    }
-                }
-
+                intent.putExtra("ATTRACTION_ID", attraction.getDocumentId());
                 startActivity(intent);
             }
         });
@@ -119,6 +96,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     }
 
                                     if (attraction != null) {
+                                        attraction.setDocumentId(document.getId());
                                         attractionsList.add(attraction);
                                     }
                                 } catch (Exception e) {
@@ -141,15 +119,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng firstLocation = null;
 
         for (Attraction attr : attractionsList) {
-            LatLng location = new LatLng(attr.getLatitude(), attr.getLongitude());
-            Marker marker = mMap.addMarker(new MarkerOptions()
-                    .position(location)
-                    .title(attr.getLocalizedName(this))
-                    .snippet(attr.getLocalizedCity(this)));
-            marker.setTag(attr);
 
-            if(firstLocation == null) {
-                firstLocation = location;
+            if (!(attr instanceof Seta)) {
+
+                LatLng location = new LatLng(attr.getLatitude(), attr.getLongitude());
+                Marker marker = mMap.addMarker(new MarkerOptions()
+                        .position(location)
+                        .title(attr.getLocalizedName(this))
+                        .snippet(attr.getLocalizedCity(this)));
+                marker.setTag(attr);
+
+                if(firstLocation == null) {
+                    firstLocation = location;
+                }
             }
         }
 

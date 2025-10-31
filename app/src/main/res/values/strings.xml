@@ -19,6 +19,7 @@
     <string name="category_all">Összes látványosság mutatása</string>
     <string name="detail_nav_button">Navigáció indítása</string>
     <string name="change_language_button">Nyelv választás</string>
+    <string name="detail_walk_button">Séta indítása</string>
 
     <string name="menu_search">Keresés</string>
     <string name="menu_filter">Szűrő</string>
@@ -43,6 +44,7 @@
     <string name="toast_filter_set">Ár szűrő beállítva:</string>
     <string name="toast_results_found">Találatok: %d</string>
     <string name="toast_location_permission_denied">Helymeghatározás nélkül a távolság szerinti rendezés nem lehetséges.</string>
+    <string name="toast_no_app_for_route">Nincs telepítve alkalmazás az útvonal megnyitásához.</string>
 
     <string name="distance_format_km">%.1f km</string>
 

@@ -18,6 +18,7 @@
     <string name="category_all">Arată toate atracțiile</string>
     <string name="detail_nav_button">Pornește navigația</string>
     <string name="change_language_button">Schimbă limba</string>
+    <string name="detail_walk_button">Începe plimbarea</string>
 
     <string name="menu_search">Căutare</string>
     <string name="menu_filter">Filtru</string>
@@ -42,6 +43,7 @@
     <string name="toast_filter_set">Filtru de preț setat:</string>
     <string name="toast_results_found">Rezultate găsite: %d</string>
     <string name="toast_location_permission_denied">Sortarea după distanță nu este disponibilă fără permisiunea de localizare.</string>
+    <string name="toast_no_app_for_route">Nicio aplicație instalată pentru a deschide acest traseu.</string>
 
     <string name="distance_format_km">%.1f km</string>
 
