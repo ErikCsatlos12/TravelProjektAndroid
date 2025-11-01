@@ -141,8 +141,19 @@ public class AttractionDetailActivity extends BaseActivity implements OnMapReady
             if (currentAttraction != null) {
                 currentAttraction.setDocumentId(documentSnapshot.getId());
                 populateUI();
+
+                initMapFragment();
             }
         });
+    }
+
+    private void initMapFragment() {
+        mapContainer.setVisibility(View.VISIBLE);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.detail_map_fragment);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
     }
 
     private void populateUI() {
@@ -160,7 +171,6 @@ public class AttractionDetailActivity extends BaseActivity implements OnMapReady
         detailImage.setImageResource(imageResIdToShow);
 
         if (currentAttraction instanceof Seta) {
-            mapContainer.setVisibility(View.VISIBLE);
             mapButton.setVisibility(View.VISIBLE);
             mapButton.setText(getString(R.string.detail_walk_button));
             mapButton.setOnClickListener(new View.OnClickListener() {
@@ -169,9 +179,7 @@ public class AttractionDetailActivity extends BaseActivity implements OnMapReady
                     startWalkNavigation();
                 }
             });
-            fetchRouteAndInitMap();
         } else {
-            mapContainer.setVisibility(View.GONE);
             mapButton.setVisibility(View.VISIBLE);
             mapButton.setText(getString(R.string.detail_nav_button));
             mapButton.setOnClickListener(new View.OnClickListener() {
@@ -246,12 +254,12 @@ public class AttractionDetailActivity extends BaseActivity implements OnMapReady
         }
     }
 
-    private void fetchRouteAndInitMap() {
+    private void fetchRouteAndDrawPolyline() {
         Seta seta = (Seta) currentAttraction;
         List<GeoPoint> waypoints = seta.getWaypoints();
 
         if (waypoints == null || waypoints.isEmpty()) {
-            mapContainer.setVisibility(View.GONE);
+            drawSinglePin();
             return;
         }
 
@@ -284,30 +292,21 @@ public class AttractionDetailActivity extends BaseActivity implements OnMapReady
                         if (response.isSuccessful() && response.body() != null && !response.body().getRoutes().isEmpty()) {
                             String encodedPolyline = response.body().getRoutes().get(0).getOverviewPolyline().getPoints();
                             decodedRoutePoints = PolyUtil.decode(encodedPolyline);
-
-                            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                                    .findFragmentById(R.id.detail_map_fragment);
-                            if (mapFragment != null) {
-                                mapFragment.getMapAsync(AttractionDetailActivity.this);
-                            }
+                            drawPolylineAndZoom();
                         } else {
-                            mapContainer.setVisibility(View.GONE);
+                            drawSinglePin();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<DirectionsResponse> call, Throwable t) {
                         Log.e("DirectionsAPI", "Hálózati hiba", t);
-                        mapContainer.setVisibility(View.GONE);
+                        drawSinglePin();
                     }
                 });
     }
 
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        miniMap = googleMap;
-        miniMap.getUiSettings().setScrollGesturesEnabled(true);
-
+    private void drawPolylineAndZoom() {
         if (decodedRoutePoints == null || decodedRoutePoints.isEmpty()) return;
 
         PolylineOptions polylineOptions = new PolylineOptions()
@@ -331,6 +330,24 @@ public class AttractionDetailActivity extends BaseActivity implements OnMapReady
 
         LatLngBounds bounds = boundsBuilder.build();
         miniMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+    }
+
+    private void drawSinglePin() {
+        LatLng location = new LatLng(currentAttraction.getLatitude(), currentAttraction.getLongitude());
+        miniMap.addMarker(new MarkerOptions().position(location).title(currentAttraction.getLocalizedName(this)));
+        miniMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15f));
+    }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        miniMap = googleMap;
+        miniMap.getUiSettings().setScrollGesturesEnabled(true);
+
+        if (currentAttraction instanceof Seta) {
+            fetchRouteAndDrawPolyline();
+        } else {
+            drawSinglePin();
+        }
     }
 
     private void showPriceInfoDialog() {
